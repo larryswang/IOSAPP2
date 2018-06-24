@@ -21,6 +21,12 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var inputTextField: UITextField!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var switchUI: UISwitch!
+    @IBOutlet weak var sensor1: UILabel!
+    @IBOutlet weak var sensor2: UILabel!
+    @IBOutlet weak var sensor3: UILabel!
+    @IBOutlet weak var sensor4: UILabel!
+    @IBOutlet weak var sensor5: UILabel!
+    @IBOutlet weak var sensor6: UILabel!
     //Data
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
@@ -68,14 +74,46 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let appendString = "\n"
             let myFont = UIFont(name: "Helvetica Neue", size: 15.0)
             let myAttributes2 = [NSFontAttributeName: myFont!, NSForegroundColorAttributeName: UIColor.red]
-            let attribString = NSAttributedString(string: "[Incoming]: " + (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
+            let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
             let newAsciiText = NSMutableAttributedString(attributedString: self.consoleAsciiText!)
             self.baseTextView.attributedText = NSAttributedString(string: characteristicASCIIValue as String , attributes: myAttributes2)
             
-            newAsciiText.append(attribString)
+            let aMessage = attribString.string
             
+            if(aMessage.contains("#")){
+                let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
+                let end1 = aMessage.index(aMessage.startIndex, offsetBy: 4)
+                let range1 = start1..<end1
+                self.sensor1.text = aMessage[range1]  // play
+                
+                let start2 = aMessage.index(aMessage.startIndex, offsetBy: 4)
+                let end2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                let range2 = start2..<end2
+                self.sensor2.text = aMessage[range2]  // play
+                
+                let start3 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                let end3 = aMessage.index(aMessage.startIndex, offsetBy: 10)
+                let range3 = start3..<end3
+                self.sensor3.text = aMessage[range3]  // play
+                
+                let start4 = aMessage.index(aMessage.startIndex, offsetBy: 10)
+                let end4 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                let range4 = start4..<end4
+                self.sensor4.text = aMessage[range4]  // play
+                
+                let start5 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                let end5 = aMessage.index(aMessage.startIndex, offsetBy: 16)
+                let range5 = start5..<end5
+                self.sensor5.text = aMessage[range5]  // play
+                
+                let start6 = aMessage.index(aMessage.startIndex, offsetBy: 16)
+                let end6 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                let range6 = start6..<end6
+                self.sensor6.text = aMessage[range6]  // play
+            }
             self.consoleAsciiText = newAsciiText
             self.baseTextView.attributedText = self.consoleAsciiText
+            
             
         }
     }
