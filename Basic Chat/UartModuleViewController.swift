@@ -114,13 +114,40 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.consoleAsciiText = newAsciiText
             self.baseTextView.attributedText = self.consoleAsciiText
             
+            // add head image
+            let headimageName = "bluehead.png"
+            let headimage = UIImage(named: headimageName)
+            let headimageView = UIImageView(image: headimage!)
             
+            headimageView.frame = CGRect(x: 500, y: 100, width: 100, height: 85)
+            self.view.addSubview(headimageView)
+            
+            // add body image
+            let bodyimageName = "bodyblue.png"
+            let bodyimage = UIImage(named: bodyimageName)
+            let bodyimageView = UIImageView(image: bodyimage!)
+            
+            bodyimageView.frame = CGRect(x: 402, y: 185, width: 300, height: 300)
+            self.view.addSubview(bodyimageView)
+            // add hip image
+            let hipimageName = "legblue.png"
+            let hipimage = UIImage(named: hipimageName)
+            let hipimageView = UIImageView(image: hipimage!)
+            
+            hipimageView.frame = CGRect(x: 482, y: 327, width: 130, height: 250)
+            self.view.addSubview(hipimageView)
+            // add leg image
+            let feetimageName = "feetblue.png"
+            let feetimage = UIImage(named: feetimageName)
+            let feetimageView = UIImageView(image: feetimage!)
+            
+            feetimageView.frame = CGRect(x: 390, y: 540, width: 290, height: 250)
+            self.view.addSubview(feetimageView)
         }
     }
     
     @IBAction func clickSendAction(_ sender: AnyObject) {
         outgoingData()
-        
     }
     
     
