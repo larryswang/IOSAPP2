@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Basic Chat.xcodeproj">
+      location = "self:/Users/shiyuwang/Documents/LackOfMotion/IOSAPP2/MSafetyLab.xcodeproj">
    </FileRef>
 </Workspace>

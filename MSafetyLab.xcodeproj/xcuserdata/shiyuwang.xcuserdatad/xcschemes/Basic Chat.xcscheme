@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D5B24DD71DEE393B00D33B5A"
-               BuildableName = "Basic Chat.app"
-               BlueprintName = "Basic Chat"
-               ReferencedContainer = "container:Basic Chat.xcodeproj">
+               BuildableName = "MSafetyLab.app"
+               BlueprintName = "MSafetyLab"
+               ReferencedContainer = "container:MSafetyLab.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D5B24DD71DEE393B00D33B5A"
-            BuildableName = "Basic Chat.app"
-            BlueprintName = "Basic Chat"
-            ReferencedContainer = "container:Basic Chat.xcodeproj">
+            BuildableName = "MSafetyLab.app"
+            BlueprintName = "MSafetyLab"
+            ReferencedContainer = "container:MSafetyLab.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D5B24DD71DEE393B00D33B5A"
-            BuildableName = "Basic Chat.app"
-            BlueprintName = "Basic Chat"
-            ReferencedContainer = "container:Basic Chat.xcodeproj">
+            BuildableName = "MSafetyLab.app"
+            BlueprintName = "MSafetyLab"
+            ReferencedContainer = "container:MSafetyLab.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D5B24DD71DEE393B00D33B5A"
-            BuildableName = "Basic Chat.app"
-            BlueprintName = "Basic Chat"
-            ReferencedContainer = "container:Basic Chat.xcodeproj">
+            BuildableName = "MSafetyLab.app"
+            BlueprintName = "MSafetyLab"
+            ReferencedContainer = "container:MSafetyLab.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
