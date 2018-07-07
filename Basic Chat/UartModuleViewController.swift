@@ -15,6 +15,11 @@ import CoreBluetooth
 
 class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, UITextViewDelegate, UITextFieldDelegate {
     
+    @IBOutlet weak var headView: UIImageView!
+    @IBOutlet weak var bodyView: UIImageView!
+    @IBOutlet weak var legView: UIImageView!
+    @IBOutlet weak var feetView: UIImageView!
+    
     //UI
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var sensor1: UILabel!
@@ -27,12 +32,17 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
-    
+    //Data matrix
+    var sensor1data : [Int] = []
+    var sensor2data : [Int] = []
+    var sensor3data : [Int] = []
+    var sensor4data : [Int] = []
+    var sensor5data : [Int] = []
+    var sensor6data : [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title:"Back", style:.plain, target:nil, action:nil)
         //Create and start the peripheral manager
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
         //-Notification for updating the text view with incoming text
@@ -68,63 +78,50 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 let end1 = aMessage.index(aMessage.startIndex, offsetBy: 4)
                 let range1 = start1..<end1
                 self.sensor1.text = aMessage[range1]  // play
+                self.sensor1data.append((self.sensor1.text! as NSString).integerValue)
                 
                 let start2 = aMessage.index(aMessage.startIndex, offsetBy: 4)
                 let end2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                 let range2 = start2..<end2
                 self.sensor2.text = aMessage[range2]  // play
+                self.sensor2data.append((self.sensor1.text! as NSString).integerValue)
                 
                 let start3 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                 let end3 = aMessage.index(aMessage.startIndex, offsetBy: 10)
                 let range3 = start3..<end3
                 self.sensor3.text = aMessage[range3]  // play
+                self.sensor3data.append((self.sensor1.text! as NSString).integerValue)
                 
                 let start4 = aMessage.index(aMessage.startIndex, offsetBy: 10)
                 let end4 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                 let range4 = start4..<end4
                 self.sensor4.text = aMessage[range4]  // play
+                self.sensor4data.append((self.sensor1.text! as NSString).integerValue)
                 
                 let start5 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                 let end5 = aMessage.index(aMessage.startIndex, offsetBy: 16)
                 let range5 = start5..<end5
                 self.sensor5.text = aMessage[range5]  // play
+                self.sensor5data.append((self.sensor1.text! as NSString).integerValue)
                 
                 let start6 = aMessage.index(aMessage.startIndex, offsetBy: 16)
                 let end6 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                 let range6 = start6..<end6
                 self.sensor6.text = aMessage[range6]  // play
+                self.sensor6data.append((self.sensor1.text! as NSString).integerValue)
             }
             self.consoleAsciiText = newAsciiText
             
-            // add head image
-            let headimageName = "bluehead.png"
-            let headimage = UIImage(named: headimageName)
-            let headimageView = UIImageView(image: headimage!)
+            let headimageName = "greenhead.png"
+            let bodyimageName = "greenbody.png"
+            let legimageName = "greenleg.png"
+            let feetimageName = "greenfeet.png"
             
-            headimageView.frame = CGRect(x: 500, y: 100, width: 100, height: 85)
-            self.view.addSubview(headimageView)
+            self.headView.image = UIImage(named: headimageName)
+            self.bodyView.image = UIImage(named: bodyimageName)
+            self.legView.image = UIImage(named: legimageName)
+            self.feetView.image = UIImage(named: feetimageName)
             
-            // add body image
-            let bodyimageName = "bodyblue.png"
-            let bodyimage = UIImage(named: bodyimageName)
-            let bodyimageView = UIImageView(image: bodyimage!)
-            
-            bodyimageView.frame = CGRect(x: 402, y: 185, width: 300, height: 300)
-            self.view.addSubview(bodyimageView)
-            // add hip image
-            let hipimageName = "legblue.png"
-            let hipimage = UIImage(named: hipimageName)
-            let hipimageView = UIImageView(image: hipimage!)
-            
-            hipimageView.frame = CGRect(x: 482, y: 327, width: 130, height: 250)
-            self.view.addSubview(hipimageView)
-            // add leg image
-            let feetimageName = "feetblue.png"
-            let feetimage = UIImage(named: feetimageName)
-            let feetimageView = UIImageView(image: feetimage!)
-            
-            feetimageView.frame = CGRect(x: 390, y: 540, width: 290, height: 250)
-            self.view.addSubview(feetimageView)
         }
     }
     

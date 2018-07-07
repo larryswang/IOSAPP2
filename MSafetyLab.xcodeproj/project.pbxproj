@@ -15,16 +15,6 @@
 		D5B24DE61DEE393B00D33B5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D5B24DE41DEE393B00D33B5A /* LaunchScreen.storyboard */; };
 		D5B24DEE1DEE399800D33B5A /* BLECentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B24DED1DEE399800D33B5A /* BLECentralViewController.swift */; };
 		D5B24DF11DEF153A00D33B5A /* PeripheralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B24DEF1DEF153A00D33B5A /* PeripheralTableViewCell.swift */; };
-		DD425F7920E129DA006F54BB /* feetred.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F6F20E129D8006F54BB /* feetred.png */; };
-		DD425F7A20E129DA006F54BB /* legorange.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7020E129D9006F54BB /* legorange.png */; };
-		DD425F7B20E129DA006F54BB /* legred.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7120E129D9006F54BB /* legred.png */; };
-		DD425F7C20E129DA006F54BB /* bodyred.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7220E129D9006F54BB /* bodyred.png */; };
-		DD425F7D20E129DA006F54BB /* feetorange.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7320E129D9006F54BB /* feetorange.png */; };
-		DD425F7E20E129DA006F54BB /* feetblue.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7420E129D9006F54BB /* feetblue.png */; };
-		DD425F7F20E129DA006F54BB /* bluehead.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7520E129D9006F54BB /* bluehead.png */; };
-		DD425F8020E129DA006F54BB /* legblue.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7620E129D9006F54BB /* legblue.png */; };
-		DD425F8120E129DA006F54BB /* WX20180625-201553@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7720E129D9006F54BB /* WX20180625-201553@2x.png */; };
-		DD425F8220E129DA006F54BB /* bodyblue.png in Resources */ = {isa = PBXBuildFile; fileRef = DD425F7820E129DA006F54BB /* bodyblue.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,16 +28,6 @@
 		D5B24DE71DEE393B00D33B5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D5B24DED1DEE399800D33B5A /* BLECentralViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLECentralViewController.swift; sourceTree = "<group>"; };
 		D5B24DEF1DEF153A00D33B5A /* PeripheralTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralTableViewCell.swift; sourceTree = "<group>"; };
-		DD425F6F20E129D8006F54BB /* feetred.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = feetred.png; path = Assets.xcassets/feetred.png; sourceTree = "<group>"; };
-		DD425F7020E129D9006F54BB /* legorange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = legorange.png; path = Assets.xcassets/legorange.png; sourceTree = "<group>"; };
-		DD425F7120E129D9006F54BB /* legred.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = legred.png; path = Assets.xcassets/legred.png; sourceTree = "<group>"; };
-		DD425F7220E129D9006F54BB /* bodyred.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bodyred.png; path = Assets.xcassets/bodyred.png; sourceTree = "<group>"; };
-		DD425F7320E129D9006F54BB /* feetorange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = feetorange.png; path = Assets.xcassets/feetorange.png; sourceTree = "<group>"; };
-		DD425F7420E129D9006F54BB /* feetblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = feetblue.png; path = Assets.xcassets/feetblue.png; sourceTree = "<group>"; };
-		DD425F7520E129D9006F54BB /* bluehead.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bluehead.png; path = Assets.xcassets/bluehead.png; sourceTree = "<group>"; };
-		DD425F7620E129D9006F54BB /* legblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = legblue.png; path = Assets.xcassets/legblue.png; sourceTree = "<group>"; };
-		DD425F7720E129D9006F54BB /* WX20180625-201553@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "WX20180625-201553@2x.png"; path = "Assets.xcassets/WX20180625-201553@2x.png"; sourceTree = "<group>"; };
-		DD425F7820E129DA006F54BB /* bodyblue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bodyblue.png; path = Assets.xcassets/bodyblue.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,16 +60,6 @@
 		D5B24DDA1DEE393B00D33B5A /* Basic Chat */ = {
 			isa = PBXGroup;
 			children = (
-				DD425F7520E129D9006F54BB /* bluehead.png */,
-				DD425F7820E129DA006F54BB /* bodyblue.png */,
-				DD425F7220E129D9006F54BB /* bodyred.png */,
-				DD425F7420E129D9006F54BB /* feetblue.png */,
-				DD425F7320E129D9006F54BB /* feetorange.png */,
-				DD425F6F20E129D8006F54BB /* feetred.png */,
-				DD425F7620E129D9006F54BB /* legblue.png */,
-				DD425F7020E129D9006F54BB /* legorange.png */,
-				DD425F7120E129D9006F54BB /* legred.png */,
-				DD425F7720E129D9006F54BB /* WX20180625-201553@2x.png */,
 				D5B24DDB1DEE393B00D33B5A /* AppDelegate.swift */,
 				D5B24DED1DEE399800D33B5A /* BLECentralViewController.swift */,
 				D50657251DF45E04002B7557 /* UartModuleViewController.swift */,
@@ -163,19 +133,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD425F7E20E129DA006F54BB /* feetblue.png in Resources */,
-				DD425F7C20E129DA006F54BB /* bodyred.png in Resources */,
-				DD425F7D20E129DA006F54BB /* feetorange.png in Resources */,
-				DD425F8220E129DA006F54BB /* bodyblue.png in Resources */,
 				D5B24DE61DEE393B00D33B5A /* LaunchScreen.storyboard in Resources */,
-				DD425F7920E129DA006F54BB /* feetred.png in Resources */,
-				DD425F7A20E129DA006F54BB /* legorange.png in Resources */,
 				D5B24DE31DEE393B00D33B5A /* Assets.xcassets in Resources */,
-				DD425F7B20E129DA006F54BB /* legred.png in Resources */,
 				D5B24DE11DEE393B00D33B5A /* Main.storyboard in Resources */,
-				DD425F8120E129DA006F54BB /* WX20180625-201553@2x.png in Resources */,
-				DD425F8020E129DA006F54BB /* legblue.png in Resources */,
-				DD425F7F20E129DA006F54BB /* bluehead.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -196,15 +196,32 @@
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VmB-Yq-FS4">
+                                                <rect key="frame" x="524" y="160" width="102" height="128"/>
+                                            </imageView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FNb-H3-XDp">
+                                                <rect key="frame" x="455" y="282" width="240" height="236"/>
+                                            </imageView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="96m-zB-TCa">
+                                                <rect key="frame" x="455" y="448" width="240" height="239"/>
+                                            </imageView>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1Pp-ua-4M3">
+                                                <rect key="frame" x="455" y="695" width="240" height="128"/>
+                                            </imageView>
                                         </subviews>
                                         <color key="backgroundColor" red="0.16927744289999999" green="0.16927744289999999" blue="0.16927744289999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="dqN-db-CIM" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="154" id="2lT-v0-ql7"/>
                                             <constraint firstItem="2AV-zQ-bBC" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="3Nb-oU-G0o"/>
+                                            <constraint firstItem="FNb-H3-XDp" firstAttribute="top" secondItem="oqA-bO-3LA" secondAttribute="top" constant="282" id="7ds-WG-ZzA"/>
+                                            <constraint firstAttribute="trailing" secondItem="VmB-Yq-FS4" secondAttribute="trailing" constant="142" id="8VU-Tj-gGv"/>
                                             <constraint firstItem="K0F-Ti-pLM" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="154" id="AYe-p6-bnW"/>
                                             <constraint firstItem="wkb-P0-tAp" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="154" id="DB7-L3-V7T"/>
+                                            <constraint firstAttribute="trailing" secondItem="FNb-H3-XDp" secondAttribute="trailing" constant="73" id="FCV-jO-Ay9"/>
                                             <constraint firstItem="O39-iY-PoE" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="IQP-Dx-M8Q"/>
                                             <constraint firstItem="wkb-P0-tAp" firstAttribute="trailing" secondItem="dqN-db-CIM" secondAttribute="trailing" id="K2n-5v-hQs"/>
+                                            <constraint firstAttribute="trailing" secondItem="96m-zB-TCa" secondAttribute="trailing" constant="73" id="M3v-Ci-9SA"/>
+                                            <constraint firstAttribute="trailing" secondItem="1Pp-ua-4M3" secondAttribute="trailing" constant="73" id="MhQ-aH-wRf"/>
                                             <constraint firstItem="tLh-Mb-aOG" firstAttribute="trailing" secondItem="dqN-db-CIM" secondAttribute="trailing" id="PKV-iB-eid"/>
                                             <constraint firstItem="NRa-O6-ga2" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="RRK-og-RhR"/>
                                             <constraint firstItem="NRa-O6-ga2" firstAttribute="top" secondItem="2AV-zQ-bBC" secondAttribute="bottom" constant="8" id="WtK-u2-HuO"/>
@@ -214,12 +231,15 @@
                                             <constraint firstItem="dqN-db-CIM" firstAttribute="top" secondItem="2AV-zQ-bBC" secondAttribute="top" id="cyo-9H-Ok1"/>
                                             <constraint firstItem="nZ9-Sd-Nv6" firstAttribute="top" secondItem="K0F-Ti-pLM" secondAttribute="bottom" constant="8" id="dgF-Bm-ovq"/>
                                             <constraint firstItem="wkb-P0-tAp" firstAttribute="top" secondItem="yCJ-oQ-xte" secondAttribute="bottom" constant="8" id="f0F-2A-evn"/>
+                                            <constraint firstItem="VmB-Yq-FS4" firstAttribute="top" secondItem="oqA-bO-3LA" secondAttribute="top" constant="160" id="fS1-ww-owP"/>
                                             <constraint firstItem="68d-Ec-Zva" firstAttribute="top" secondItem="NRa-O6-ga2" secondAttribute="bottom" constant="8" id="ge5-mG-nXh"/>
                                             <constraint firstItem="wgu-eg-z6y" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="ghB-E6-AX7"/>
                                             <constraint firstItem="yCJ-oQ-xte" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="154" id="giW-X6-9q4"/>
                                             <constraint firstItem="68d-Ec-Zva" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="gkS-Dy-hX9"/>
                                             <constraint firstItem="O39-iY-PoE" firstAttribute="top" secondItem="68d-Ec-Zva" secondAttribute="bottom" constant="8" id="h3N-sX-XW3"/>
+                                            <constraint firstItem="1Pp-ua-4M3" firstAttribute="top" secondItem="96m-zB-TCa" secondAttribute="bottom" constant="8" id="hVD-9a-hYt"/>
                                             <constraint firstItem="nZ9-Sd-Nv6" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="154" id="hyf-vS-XwO"/>
+                                            <constraint firstItem="96m-zB-TCa" firstAttribute="top" secondItem="VmB-Yq-FS4" secondAttribute="bottom" constant="160" id="iWz-kZ-MdD"/>
                                             <constraint firstItem="2AV-zQ-bBC" firstAttribute="top" secondItem="4zC-rE-M7Y" secondAttribute="bottom" constant="32" id="iw1-fd-QKg"/>
                                             <constraint firstItem="yCJ-oQ-xte" firstAttribute="top" secondItem="tLh-Mb-aOG" secondAttribute="bottom" constant="8" id="kGv-d6-jMT"/>
                                             <constraint firstItem="tLh-Mb-aOG" firstAttribute="top" secondItem="dqN-db-CIM" secondAttribute="bottom" constant="8" id="lXX-vX-Bic"/>
@@ -256,6 +276,10 @@
                         <barButtonItem key="backBarButtonItem" title="Disconnect" id="bh9-F4-hZD"/>
                     </navigationItem>
                     <connections>
+                        <outlet property="bodyView" destination="FNb-H3-XDp" id="uGe-E2-vLN"/>
+                        <outlet property="feetView" destination="1Pp-ua-4M3" id="vz3-97-wSQ"/>
+                        <outlet property="headView" destination="VmB-Yq-FS4" id="92b-ax-X4e"/>
+                        <outlet property="legView" destination="96m-zB-TCa" id="5v7-TG-P4h"/>
                         <outlet property="scrollView" destination="fEQ-Id-Qp8" id="FsD-lV-H8p"/>
                         <outlet property="sensor1" destination="dqN-db-CIM" id="mDt-ZD-S2F"/>
                         <outlet property="sensor2" destination="tLh-Mb-aOG" id="xr8-3T-rMX"/>
