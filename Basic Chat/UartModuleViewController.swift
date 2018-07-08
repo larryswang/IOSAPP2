@@ -58,6 +58,18 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.imageBackGround.layer.borderColor = UIColor.blue.cgColor
         //gensture control
         self.aboutView.isUserInteractionEnabled = true
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(UartModuleViewController.singleTap))
+        self.aboutView.addGestureRecognizer(gesture)
+    }
+    
+    @objc func singleTap(){
+        let alertView = UIAlertController(title: "About Msafety Lab", message:
+            "This APP is used for Lack of Motion prototype, for research use only. The Lack of Motion detecting system as well as algorithm is developed by Larry(Shiyu) Wang shiyuw@umich.edu, Biomechanics Research Lab, Mechanical Engineering of University of Michigan. Any individual as well as company must not copy without inquring.", preferredStyle: UIAlertControllerStyle.alert)
+        let OKAction = UIAlertAction(title: "OK", style:.default, handler:{_ in
+            
+        })
+        alertView.addAction(OKAction)
+        self.present(alertView, animated: true, completion: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
