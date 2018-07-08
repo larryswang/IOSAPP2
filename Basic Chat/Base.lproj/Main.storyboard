@@ -241,6 +241,18 @@
                                                     <constraint firstAttribute="width" constant="30" id="K4D-9k-L5M"/>
                                                 </constraints>
                                             </imageView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3I0-Nw-sX7">
+                                                <rect key="frame" x="47" y="422" width="80" height="48"/>
+                                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="80" id="6Rz-eo-0SV"/>
+                                                    <constraint firstAttribute="height" constant="48" id="rbn-N0-xCg"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="20"/>
+                                                <state key="normal" title="record">
+                                                    <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
@@ -249,6 +261,7 @@
                                             <constraint firstItem="2AV-zQ-bBC" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="16" id="3Nb-oU-G0o"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="2AV-zQ-bBC" secondAttribute="trailing" constant="20" symbolic="YES" id="3UV-5l-LUj"/>
                                             <constraint firstItem="96m-zB-TCa" firstAttribute="height" secondItem="oqA-bO-3LA" secondAttribute="height" multiplier="0.2" id="4qO-ur-ad1"/>
+                                            <constraint firstItem="3I0-Nw-sX7" firstAttribute="top" secondItem="agw-1I-e9q" secondAttribute="bottom" constant="54" id="7ry-iF-lyQ"/>
                                             <constraint firstItem="1Pp-ua-4M3" firstAttribute="width" secondItem="oqA-bO-3LA" secondAttribute="width" multiplier="0.35" id="7yl-4p-yi8"/>
                                             <constraint firstItem="VmB-Yq-FS4" firstAttribute="trailing" secondItem="oqA-bO-3LA" secondAttribute="trailing" multiplier="0.87" constant="-15" id="8VU-Tj-gGv"/>
                                             <constraint firstItem="96m-zB-TCa" firstAttribute="width" secondItem="oqA-bO-3LA" secondAttribute="width" multiplier="0.16" id="A7M-ms-3os"/>
@@ -310,6 +323,7 @@
                                             <constraint firstItem="RyC-QN-VxZ" firstAttribute="top" secondItem="oqA-bO-3LA" secondAttribute="top" multiplier="0.2" constant="85" id="wQI-vc-dWu"/>
                                             <constraint firstAttribute="trailing" secondItem="RyC-QN-VxZ" secondAttribute="trailing" id="woM-w1-SbQ"/>
                                             <constraint firstItem="aA6-tA-wzt" firstAttribute="top" secondItem="wgu-eg-z6y" secondAttribute="bottom" constant="8" id="xlY-b2-lv9"/>
+                                            <constraint firstItem="3I0-Nw-sX7" firstAttribute="leading" secondItem="oqA-bO-3LA" secondAttribute="leading" constant="47" id="yIP-BG-V9r"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="wgu-eg-z6y" secondAttribute="trailing" constant="20" symbolic="YES" id="zlR-JS-00c"/>
                                         </constraints>
                                     </view>
@@ -343,6 +357,7 @@
                         <outlet property="headView" destination="VmB-Yq-FS4" id="92b-ax-X4e"/>
                         <outlet property="imageBackGround" destination="RyC-QN-VxZ" id="2Ju-Lo-PxZ"/>
                         <outlet property="legView" destination="96m-zB-TCa" id="5v7-TG-P4h"/>
+                        <outlet property="recordButton" destination="3I0-Nw-sX7" id="dbu-1g-zEc"/>
                         <outlet property="scrollView" destination="fEQ-Id-Qp8" id="FsD-lV-H8p"/>
                         <outlet property="sensor1" destination="dqN-db-CIM" id="mDt-ZD-S2F"/>
                         <outlet property="sensor2" destination="tLh-Mb-aOG" id="xr8-3T-rMX"/>

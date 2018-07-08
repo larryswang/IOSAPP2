@@ -32,6 +32,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor4: UILabel!
     @IBOutlet weak var sensor5: UILabel!
     @IBOutlet weak var sensor6: UILabel!
+    @IBOutlet weak var recordButton: UIButton!
     //Data
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
@@ -54,8 +55,17 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         //set appearance
         self.sensorBackGround.layer.borderWidth = 5
         self.sensorBackGround.layer.borderColor = UIColor.blue.cgColor
+        self.sensorBackGround.layer.cornerRadius = 5
+        self.sensorBackGround.layer.masksToBounds = true
+        
         self.imageBackGround.layer.borderWidth = 5
         self.imageBackGround.layer.borderColor = UIColor.blue.cgColor
+        self.imageBackGround.layer.cornerRadius = 5
+        self.imageBackGround.layer.masksToBounds = true
+        
+        self.recordButton.layer.cornerRadius = 7
+        self.recordButton.layer.masksToBounds = true
+        
         //gensture control
         self.aboutView.isUserInteractionEnabled = true
         let gesture = UITapGestureRecognizer(target: self, action: #selector(UartModuleViewController.singleTap))
