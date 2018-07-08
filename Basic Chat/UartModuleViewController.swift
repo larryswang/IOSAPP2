@@ -15,10 +15,14 @@ import CoreBluetooth
 
 class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, UITextViewDelegate, UITextFieldDelegate {
     
+    //View
     @IBOutlet weak var headView: UIImageView!
     @IBOutlet weak var bodyView: UIImageView!
     @IBOutlet weak var legView: UIImageView!
     @IBOutlet weak var feetView: UIImageView!
+    @IBOutlet weak var sensorBackGround: UIImageView!
+    @IBOutlet weak var imageBackGround: UIImageView!
+    @IBOutlet weak var aboutView: UIImageView!
     
     //UI
     @IBOutlet weak var scrollView: UIScrollView!
@@ -47,6 +51,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
         //-Notification for updating the text view with incoming text
         updateIncomingData()
+        //set appearance
+        self.sensorBackGround.layer.borderWidth = 5
+        self.sensorBackGround.layer.borderColor = UIColor.blue.cgColor
+        self.imageBackGround.layer.borderWidth = 5
+        self.imageBackGround.layer.borderColor = UIColor.blue.cgColor
+        //gensture control
+        self.aboutView.isUserInteractionEnabled = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
