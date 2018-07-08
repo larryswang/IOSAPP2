@@ -216,8 +216,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
         let timeString = outputFormatter.string(from: now)
-        //let info  = "\(timeString)bluetoothdata \(String(describing: self.sensor1.text)) \(String(describing: self.sensor2.text)) \(String(describing: self.sensor3.text)) \(String(describing: self.sensor4.text)) \(String(describing: self.sensor5.text)) \(String(describing: self.sensor6.text))\n "
-        let info = "\(timeString) \(self.sensor1.text) \(self.sensor2.text) \(self.sensor3.text) \(self.sensor4.text) \(self.sensor5.text) \(self.sensor6.text)"
+        let value1 = sensor1.text
+        let value2 = sensor2.text
+        let value3 = sensor3.text
+        let value4 = sensor4.text
+        let value5 = sensor5.text
+        let value6 = sensor6.text
+        let info = timeString + " " + value1 + " " + value2 + " " + value3 + " " + value4 + " " + value5 + " " + value6 + "\n" ?? "DEBUG"
         let manager = FileManager.default
         let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
         let docPath = urlsForDocDirectory[0]
