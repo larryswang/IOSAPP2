@@ -249,9 +249,12 @@
                                                     <constraint firstAttribute="height" constant="48" id="rbn-N0-xCg"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="20"/>
-                                                <state key="normal" title="record">
+                                                <state key="normal" title="RECORD">
                                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="startRecording:" destination="aQA-m6-Bjv" eventType="touchUpInside" id="bBy-11-w4L"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -377,4 +380,5 @@
         <image name="about" width="225" height="225"/>
         <image name="block-m-feed" width="3542" height="1992"/>
     </resources>
+    <color key="tintColor" red="0.22698287053447253" green="0.33988899746895962" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

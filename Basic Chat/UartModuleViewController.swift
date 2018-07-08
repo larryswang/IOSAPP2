@@ -34,6 +34,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor6: UILabel!
     @IBOutlet weak var recordButton: UIButton!
     //Data
+    var startedRecord : Bool = false
+    var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
@@ -71,6 +73,42 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let gesture = UITapGestureRecognizer(target: self, action: #selector(UartModuleViewController.singleTap))
         self.aboutView.addGestureRecognizer(gesture)
     }
+    
+    @IBAction func startRecording(_ sender: Any){
+        weak var weakSelf = self
+        if(sender as! UIButton).isSelected{
+            //stop record
+            self.startedRecord = false
+            (sender as! UIButton).isSelected = !(sender as! UIButton).isSelected
+            (sender as! UIButton).setTitle("RECORD", for:UIControlState.normal)
+        }else{
+            let alertController = UIAlertController(title: "Create document name",
+                                                    message: nil, preferredStyle: .alert)
+            alertController.addTextField {
+                (textField: UITextField!) -> Void in
+                textField.placeholder = "document name"
+                let now = Date()
+                let outputFormatter = DateFormatter()
+                outputFormatter.dateFormat = "yyyyMMdd:HH:mm:ss"
+                let timeString = outputFormatter.string(from: now)
+                textField.text=timeString
+            }
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            let okAction = UIAlertAction(title: "Ok", style: .default, handler: {
+                action in
+                (sender as! UIButton).setTitle("STOP", for:UIControlState.normal)
+                let login:NSString = alertController.textFields!.first!.text! as NSString
+                self.filePath="\( login).txt"
+                print(self.filePath)
+                weakSelf?.startedRecord = true
+            })
+            alertController.addAction(cancelAction)
+            alertController.addAction(okAction)
+            (sender as! UIButton).isSelected = !(sender as! UIButton).isSelected
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
     
     @objc func singleTap(){
         let alertView = UIAlertController(title: "About Msafety Lab", message:
@@ -145,6 +183,10 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             }
             self.consoleAsciiText = newAsciiText
             
+            if self.startedRecord {
+                self.recordData()
+            }
+            
             let headimageName = "greenhead.png"
             let bodyimageName = "greenbody.png"
             let legimageName = "greenleg.png"
@@ -158,6 +200,36 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         }
     }
     
+    func recordData(){
+        let fileManager = FileManager.default
+        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
+        var exist = fileManager.fileExists(atPath: filePath1)
+        let pioneerString="\n"
+        exist = !exist
+        
+        if exist{
+            try! pioneerString.write(toFile: filePath1, atomically: true, encoding: String.Encoding.utf8)
+            print(filePath1)
+            
+        }
+        let now = Date()
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "HH:mm:ss.SSS"
+        let timeString = outputFormatter.string(from: now)
+        //let info  = "\(timeString)bluetoothdata \(String(describing: self.sensor1.text)) \(String(describing: self.sensor2.text)) \(String(describing: self.sensor3.text)) \(String(describing: self.sensor4.text)) \(String(describing: self.sensor5.text)) \(String(describing: self.sensor6.text))\n "
+        let info = "\(timeString) \(self.sensor1.text) \(self.sensor2.text) \(self.sensor3.text) \(self.sensor4.text) \(self.sensor5.text) \(self.sensor6.text)"
+        let manager = FileManager.default
+        let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
+        let docPath = urlsForDocDirectory[0]
+        let file = docPath.appendingPathComponent(self.filePath)
+        print(file)
+        
+        let appendedData = info.data(using: String.Encoding.utf8, allowLossyConversion: true)
+        let fileHandle :FileHandle = FileHandle(forWritingAtPath: filePath1)!
+        fileHandle.seekToEndOfFile()
+        fileHandle.write(appendedData!)
+        fileHandle.closeFile()
+    }
     
     // Write functions
     func writeValue(data: String){
