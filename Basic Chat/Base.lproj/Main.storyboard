@@ -242,13 +242,14 @@
                                                 </constraints>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3I0-Nw-sX7">
-                                                <rect key="frame" x="47" y="422" width="80" height="48"/>
+                                                <rect key="frame" x="47" y="422" width="128" height="48"/>
                                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="80" id="6Rz-eo-0SV"/>
+                                                    <constraint firstAttribute="width" constant="128" id="6Rz-eo-0SV"/>
                                                     <constraint firstAttribute="height" constant="48" id="rbn-N0-xCg"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="20"/>
+                                                <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <state key="normal" title="RECORD">
                                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>

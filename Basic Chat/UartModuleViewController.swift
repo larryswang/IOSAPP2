@@ -204,14 +204,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let fileManager = FileManager.default
         let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
         var exist = fileManager.fileExists(atPath: filePath1)
-        let pioneerString="\n"
+        //let pioneerString="\n"
         exist = !exist
         
-        if exist{
+        /*if exist{
             try! pioneerString.write(toFile: filePath1, atomically: true, encoding: String.Encoding.utf8)
             print(filePath1)
             
-        }
+        }*/
         let now = Date()
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
@@ -222,7 +222,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let value4 = sensor4.text
         let value5 = sensor5.text
         let value6 = sensor6.text
-        let info = timeString + " " + value1 + " " + value2 + " " + value3 + " " + value4 + " " + value5 + " " + value6 + "\n" ?? "DEBUG"
+        let debugValue = "MVL"
+        let info = "\(timeString) \(value1 ?? debugValue) \(value2 ?? debugValue) \(value3 ?? debugValue) \(value4 ?? debugValue) \(value5 ?? debugValue) \(value6 ?? debugValue)\n"
         let manager = FileManager.default
         let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
         let docPath = urlsForDocDirectory[0]
