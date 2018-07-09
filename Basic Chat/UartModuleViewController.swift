@@ -85,6 +85,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.aboutView.isUserInteractionEnabled = true
         let gesture = UITapGestureRecognizer(target: self, action: #selector(UartModuleViewController.singleTap))
         self.aboutView.addGestureRecognizer(gesture)
+        
+        
     }
     
     @IBAction func startRecording(_ sender: Any){
@@ -345,6 +347,11 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             print("\(error)")
             return
         }
+    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let backItem = UIBarButtonItem()
+        backItem.title = "Back"
+        navigationItem.backBarButtonItem = backItem // This will show in the next view controller being pushed
     }
 }
 
