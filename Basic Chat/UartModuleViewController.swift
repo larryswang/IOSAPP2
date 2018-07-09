@@ -23,6 +23,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensorBackGround: UIImageView!
     @IBOutlet weak var imageBackGround: UIImageView!
     @IBOutlet weak var aboutView: UIImageView!
+    @IBOutlet weak var motionView: UIImageView!
     
     //UI
     @IBOutlet weak var scrollView: UIScrollView!
@@ -33,8 +34,15 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor5: UILabel!
     @IBOutlet weak var sensor6: UILabel!
     @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var histButton: UIButton!
+    @IBOutlet weak var hipTime: UILabel!
+    @IBOutlet weak var feetTime: UILabel!
+    @IBOutlet weak var shoulderTime: UILabel!
     //Data
     var startedRecord : Bool = false
+    var shoulderStillTime : Int = 0
+    var hipStillTime : Int = 0
+    var feetStillTime : Int = 0
     var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
@@ -65,8 +73,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.imageBackGround.layer.cornerRadius = 5
         self.imageBackGround.layer.masksToBounds = true
         
+        self.motionView.layer.borderWidth = 5
+        self.motionView.layer.borderColor = UIColor.blue.cgColor
+        self.motionView.layer.cornerRadius = 5
+        self.motionView.layer.masksToBounds = true
+        
         self.recordButton.layer.cornerRadius = 7
         self.recordButton.layer.masksToBounds = true
+        
         
         //gensture control
         self.aboutView.isUserInteractionEnabled = true
@@ -155,37 +169,39 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 let end2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                 let range2 = start2..<end2
                 self.sensor2.text = aMessage[range2]  // play
-                self.sensor2data.append((self.sensor1.text! as NSString).integerValue)
+                self.sensor2data.append((self.sensor2.text! as NSString).integerValue)
                 
                 let start3 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                 let end3 = aMessage.index(aMessage.startIndex, offsetBy: 10)
                 let range3 = start3..<end3
                 self.sensor3.text = aMessage[range3]  // play
-                self.sensor3data.append((self.sensor1.text! as NSString).integerValue)
+                self.sensor3data.append((self.sensor3.text! as NSString).integerValue)
                 
                 let start4 = aMessage.index(aMessage.startIndex, offsetBy: 10)
                 let end4 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                 let range4 = start4..<end4
                 self.sensor4.text = aMessage[range4]  // play
-                self.sensor4data.append((self.sensor1.text! as NSString).integerValue)
+                self.sensor4data.append((self.sensor4.text! as NSString).integerValue)
                 
                 let start5 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                 let end5 = aMessage.index(aMessage.startIndex, offsetBy: 16)
                 let range5 = start5..<end5
                 self.sensor5.text = aMessage[range5]  // play
-                self.sensor5data.append((self.sensor1.text! as NSString).integerValue)
+                self.sensor5data.append((self.sensor5.text! as NSString).integerValue)
                 
                 let start6 = aMessage.index(aMessage.startIndex, offsetBy: 16)
                 let end6 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                 let range6 = start6..<end6
                 self.sensor6.text = aMessage[range6]  // play
-                self.sensor6data.append((self.sensor1.text! as NSString).integerValue)
+                self.sensor6data.append((self.sensor6.text! as NSString).integerValue)
             }
             self.consoleAsciiText = newAsciiText
             
             if self.startedRecord {
                 self.recordData()
             }
+            
+            self.calcStillTime()
             
             let headimageName = "greenhead.png"
             let bodyimageName = "greenbody.png"
@@ -235,6 +251,38 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         fileHandle.seekToEndOfFile()
         fileHandle.write(appendedData!)
         fileHandle.closeFile()
+    }
+    
+    func calcStillTime(){
+        let curData1 = sensor1data[sensor1data.count-1]
+        let curData2 = sensor2data[sensor2data.count-1]
+        let curData3 = sensor3data[sensor3data.count-1]
+        let curData4 = sensor4data[sensor4data.count-1]
+        let curData5 = sensor5data[sensor5data.count-1]
+        let curData6 = sensor6data[sensor6data.count-1]
+        print(curData1)
+        print(curData4)
+        if(curData1 > 2 || curData4 > 2){
+            self.shoulderStillTime = 0
+        }
+        else{
+            self.shoulderStillTime += 1
+        }
+        if(curData2 > 2 || curData5 > 2){
+            self.hipStillTime = 0
+        }
+        else{
+            self.hipStillTime += 1
+        }
+        if(curData3 > 2 || curData6 > 2){
+            self.feetStillTime = 0
+        }
+        else{
+            self.feetStillTime += 1
+        }
+        self.shoulderTime.text = "\(self.shoulderStillTime)"
+        self.hipTime.text = "\(self.hipStillTime)"
+        self.feetTime.text = "\(self.feetStillTime)"
     }
     
     // Write functions
