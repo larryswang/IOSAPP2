@@ -16,6 +16,7 @@
 		D5B24DEE1DEE399800D33B5A /* BLECentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B24DED1DEE399800D33B5A /* BLECentralViewController.swift */; };
 		D5B24DF11DEF153A00D33B5A /* PeripheralTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B24DEF1DEF153A00D33B5A /* PeripheralTableViewCell.swift */; };
 		DD54496D20F29CB1007BB17B /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DD54496C20F29CB1007BB17B /* Settings.bundle */; };
+		DDC4D8B120F3FC7700FB0BB3 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDC4D8B020F3FC7700FB0BB3 /* SecondViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		D5B24DED1DEE399800D33B5A /* BLECentralViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLECentralViewController.swift; sourceTree = "<group>"; };
 		D5B24DEF1DEF153A00D33B5A /* PeripheralTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PeripheralTableViewCell.swift; sourceTree = "<group>"; };
 		DD54496C20F29CB1007BB17B /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		DDC4D8B020F3FC7700FB0BB3 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				D5B24DEF1DEF153A00D33B5A /* PeripheralTableViewCell.swift */,
 				D50657231DF2F4C8002B7557 /* UUIDKey.swift */,
 				D5B24DDF1DEE393B00D33B5A /* Main.storyboard */,
+				DDC4D8B020F3FC7700FB0BB3 /* SecondViewController.swift */,
 				D5B24DE21DEE393B00D33B5A /* Assets.xcassets */,
 				D5B24DE41DEE393B00D33B5A /* LaunchScreen.storyboard */,
 				D5B24DE71DEE393B00D33B5A /* Info.plist */,
@@ -150,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DDC4D8B120F3FC7700FB0BB3 /* SecondViewController.swift in Sources */,
 				D50657241DF2F4C8002B7557 /* UUIDKey.swift in Sources */,
 				D5B24DEE1DEE399800D33B5A /* BLECentralViewController.swift in Sources */,
 				D5B24DDC1DEE393B00D33B5A /* AppDelegate.swift in Sources */,

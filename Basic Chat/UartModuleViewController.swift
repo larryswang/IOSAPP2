@@ -34,7 +34,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor5: UILabel!
     @IBOutlet weak var sensor6: UILabel!
     @IBOutlet weak var recordButton: UIButton!
-    @IBOutlet weak var histButton: UIButton!
     @IBOutlet weak var hipTime: UILabel!
     @IBOutlet weak var feetTime: UILabel!
     @IBOutlet weak var shoulderTime: UILabel!

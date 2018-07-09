@@ -349,7 +349,7 @@
                                                     <color key="titleColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="startRecording:" destination="aQA-m6-Bjv" eventType="touchUpInside" id="vJf-12-7lU"/>
+                                                    <segue destination="zOl-xf-Lcx" kind="push" id="UhP-NJ-RO7"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -484,7 +484,6 @@
                         <outlet property="feetView" destination="1Pp-ua-4M3" id="gic-8u-MZo"/>
                         <outlet property="headView" destination="VmB-Yq-FS4" id="92b-ax-X4e"/>
                         <outlet property="hipTime" destination="hyB-lB-2im" id="Hhs-UW-kcP"/>
-                        <outlet property="histButton" destination="NnL-UP-DTm" id="9GL-j7-WtD"/>
                         <outlet property="imageBackGround" destination="RyC-QN-VxZ" id="2Ju-Lo-PxZ"/>
                         <outlet property="legView" destination="96m-zB-TCa" id="5v7-TG-P4h"/>
                         <outlet property="motionView" destination="Po3-u2-Rqa" id="iNt-Iv-yZo"/>
@@ -503,6 +502,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1jX-4e-2bD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1100.78125" y="-4.1015625"/>
+        </scene>
+        <!--Second View Controller-->
+        <scene sceneID="jKn-wk-aVx">
+            <objects>
+                <viewController id="zOl-xf-Lcx" customClass="SecondViewController" customModule="MSafetyLab" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qnu-lD-sj1"/>
+                        <viewControllerLayoutGuide type="bottom" id="hMC-li-vEH"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="hYh-Xg-YQ0">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Q7b-yO-o2e"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fTr-db-bj5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1909" y="3"/>
         </scene>
     </scenes>
     <resources>
