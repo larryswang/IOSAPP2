@@ -34,6 +34,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor5: UILabel!
     @IBOutlet weak var sensor6: UILabel!
     @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var histButton: UIButton!
+    
     @IBOutlet weak var hipTime: UILabel!
     @IBOutlet weak var feetTime: UILabel!
     @IBOutlet weak var shoulderTime: UILabel!
@@ -80,6 +82,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.recordButton.layer.cornerRadius = 7
         self.recordButton.layer.masksToBounds = true
         
+        self.histButton.layer.cornerRadius = 7
+        self.histButton.layer.masksToBounds = true
         
         //gensture control
         self.aboutView.isUserInteractionEnabled = true
@@ -201,19 +205,11 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             if self.startedRecord {
                 self.recordData()
             }
-            
-            self.calcStillTime()
-            
-            let headimageName = "greenhead.png"
-            let bodyimageName = "greenbody.png"
-            let legimageName = "greenleg.png"
-            let feetimageName = "greenfeet.png"
-            
-            self.headView.image = UIImage(named: headimageName)
-            self.bodyView.image = UIImage(named: bodyimageName)
-            self.legView.image = UIImage(named: legimageName)
-            self.feetView.image = UIImage(named: feetimageName)
-            
+            if self.sensor1data.count != 0{
+                self.calcStillTime()
+                self.updatePictures()
+                self.getMotion()
+            }
         }
     }
     
@@ -284,6 +280,48 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.shoulderTime.text = "\(self.shoulderStillTime)"
         self.hipTime.text = "\(self.hipStillTime)"
         self.feetTime.text = "\(self.feetStillTime)"
+    }
+    
+    func updatePictures(){
+        let headImageName = "greenhead.png"
+        var shoulderImageName : String
+        var legImageName : String
+        var feetImageName : String
+        if(shoulderStillTime > 40){
+            shoulderImageName = "redbody.png"
+        }
+        else if(shoulderStillTime > 20){
+            shoulderImageName = "yellowbody.png"
+        }
+        else{
+            shoulderImageName = "greenbody.png"
+        }
+        if(hipStillTime > 40){
+            legImageName = "redleg.png"
+        }
+        else if(hipStillTime > 20){
+            legImageName = "yellowleg.png"
+        }
+        else{
+            legImageName = "greenleg.png"
+        }
+        if(feetStillTime > 40){
+            feetImageName = "redfeet.png"
+        }
+        else if(hipStillTime > 20){
+            feetImageName = "yellowfeet.png"
+        }
+        else{
+            feetImageName = "greenfeet.png"
+        }
+        self.headView.image = UIImage(named: headImageName)
+        self.bodyView.image = UIImage(named: shoulderImageName)
+        self.legView.image = UIImage(named: legImageName)
+        self.feetView.image = UIImage(named: feetImageName)
+    }
+    
+    func getMotion(){
+        
     }
     
     // Write functions

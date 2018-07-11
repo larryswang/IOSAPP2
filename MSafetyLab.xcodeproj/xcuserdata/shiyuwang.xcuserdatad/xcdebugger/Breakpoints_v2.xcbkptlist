@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Basic Chat/UartModuleViewController.swift"
-            timestampString = "552862184.458124"
+            timestampString = "553030674.247501"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "262"
+            endingLineNumber = "262"
             landmarkName = "calcStillTime()"
             landmarkType = "7">
          </BreakpointContent>

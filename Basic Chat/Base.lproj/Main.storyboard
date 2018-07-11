@@ -484,6 +484,7 @@
                         <outlet property="feetView" destination="1Pp-ua-4M3" id="gic-8u-MZo"/>
                         <outlet property="headView" destination="VmB-Yq-FS4" id="92b-ax-X4e"/>
                         <outlet property="hipTime" destination="hyB-lB-2im" id="Hhs-UW-kcP"/>
+                        <outlet property="histButton" destination="NnL-UP-DTm" id="hy1-a3-OaD"/>
                         <outlet property="imageBackGround" destination="RyC-QN-VxZ" id="2Ju-Lo-PxZ"/>
                         <outlet property="legView" destination="96m-zB-TCa" id="5v7-TG-P4h"/>
                         <outlet property="motionView" destination="Po3-u2-Rqa" id="iNt-Iv-yZo"/>
