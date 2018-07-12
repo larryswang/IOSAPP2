@@ -287,28 +287,28 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         var shoulderImageName : String
         var legImageName : String
         var feetImageName : String
-        if(shoulderStillTime > 40){
+        if(self.shoulderStillTime > 40){
             shoulderImageName = "redbody.png"
         }
-        else if(shoulderStillTime > 20){
+        else if(self.shoulderStillTime > 20){
             shoulderImageName = "yellowbody.png"
         }
         else{
             shoulderImageName = "greenbody.png"
         }
-        if(hipStillTime > 40){
+        if(self.hipStillTime > 40){
             legImageName = "redleg.png"
         }
-        else if(hipStillTime > 20){
+        else if(self.hipStillTime > 20){
             legImageName = "yellowleg.png"
         }
         else{
             legImageName = "greenleg.png"
         }
-        if(feetStillTime > 40){
+        if(self.feetStillTime > 40){
             feetImageName = "redfeet.png"
         }
-        else if(hipStillTime > 20){
+        else if(self.feetStillTime > 20){
             feetImageName = "yellowfeet.png"
         }
         else{
