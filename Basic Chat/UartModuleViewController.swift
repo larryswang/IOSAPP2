@@ -47,7 +47,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
-    var shoulderStart = Date()
+    var shoulderStart = NSDate()
     var hipStart = Date()
     var feetStart = Date()
     
@@ -212,6 +212,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.consoleAsciiText = newAsciiText
             
             // drop some data to prevent memory out of usage
+            if self.sensor1data.count == 1{
+                self.shoulderStart = NSDate()
+                print("NSDate: " , self.shoulderStart)
+                
+                self.hipStart = Date()
+                self.feetStart = Date()
+            }
             
             if self.sensor1data.count > 20{
                 self.sensor1data = Array(self.sensor1data.suffix(20));
@@ -294,7 +301,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let curData6 = sensor6data[sensor6data.count-1]
         
         if(curData1 > 2 || curData4 > 2){
-            self.shoulderStart = Date();
+            self.shoulderStart = NSDate();
         }
         
         if(curData2 > 2 || curData5 > 2){
@@ -305,24 +312,20 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.feetStart = Date();
         }
         
-        let interval : TimeInterval = 3 * 3600 + 42 * 60
-        
-        let latest1 = NSDate(timeInterval: interval, since: self.shoulderStart)
-        let difference1 = latest1.timeIntervalSince(self.shoulderStart)
+        let difference1 = Date().timeIntervalSince(self.shoulderStart as Date)
+        print("difference1: \(difference1)")
         let hours1 = Int(difference1) / 3600
         let minutes1 = (Int(difference1) / 60) % 60
         self.shoulderTime.text = "\(hours1) h \(minutes1) m"
         self.shoulderStillTime = Int(difference1) / 60
         
-        let latest2 = NSDate(timeInterval: interval, since: self.hipStart)
-        let difference2 = latest2.timeIntervalSince(self.hipStart)
+        let difference2 = Date().timeIntervalSince(self.hipStart)
         let hours2 = Int(difference2) / 3600
         let minutes2 = (Int(difference2) / 60) % 60
         self.hipTime.text = "\(hours2) h \(minutes2) m"
         self.hipStillTime = Int(difference2) / 60
         
-        let latest3 = NSDate(timeInterval: interval, since: self.feetStart)
-        let difference3 = latest3.timeIntervalSince(self.feetStart)
+        let difference3 = Date().timeIntervalSince(self.feetStart)
         let hours3 = Int(difference3) / 3600
         let minutes3 = (Int(difference3) / 60) % 60
         self.feetTime.text = "\(hours3) h \(minutes3) m"
