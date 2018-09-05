@@ -47,14 +47,18 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
+    var shoulderStart = Date()
+    var hipStart = Date()
+    var feetStart = Date()
+    
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
     //Data matrix
-    var sensor1data : [Int] = []
-    var sensor2data : [Int] = []
-    var sensor3data : [Int] = []
-    var sensor4data : [Int] = []
-    var sensor5data : [Int] = []
-    var sensor6data : [Int] = []
+    var sensor1data : [Float] = []
+    var sensor2data : [Float] = []
+    var sensor3data : [Float] = []
+    var sensor4data : [Float] = []
+    var sensor5data : [Float] = []
+    var sensor6data : [Float] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,49 +167,80 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             
             let aMessage = attribString.string
             
-            if(aMessage.contains("#")){
-                let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
-                let end1 = aMessage.index(aMessage.startIndex, offsetBy: 4)
-                let range1 = start1..<end1
-                self.sensor1.text = aMessage[range1]  // play
-                self.sensor1data.append((self.sensor1.text! as NSString).integerValue)
+            if(aMessage.contains("#") || aMessage.contains("*")){
                 
-                let start2 = aMessage.index(aMessage.startIndex, offsetBy: 4)
-                let end2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                let range2 = start2..<end2
-                self.sensor2.text = aMessage[range2]  // play
-                self.sensor2data.append((self.sensor2.text! as NSString).integerValue)
+                if(aMessage.contains("#")){
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
+                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let range1 = start1..<end1
+                    self.sensor1.text = aMessage[range1]  // play
+                    self.sensor1data.append((self.sensor1.text! as NSString).floatValue)
+                    
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 8)
+                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                    let range2 = start2..<end2
+                    self.sensor2.text = aMessage[range2]  // play
+                    self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
+                    
+                    let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                    let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                    let range3 = start3..<end3
+                    self.sensor3.text = aMessage[range3]  // play
+                    self.sensor3data.append((self.sensor3.text! as NSString).floatValue)
+                }
                 
-                let start3 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                let end3 = aMessage.index(aMessage.startIndex, offsetBy: 10)
-                let range3 = start3..<end3
-                self.sensor3.text = aMessage[range3]  // play
-                self.sensor3data.append((self.sensor3.text! as NSString).integerValue)
-                
-                let start4 = aMessage.index(aMessage.startIndex, offsetBy: 10)
-                let end4 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                let range4 = start4..<end4
-                self.sensor4.text = aMessage[range4]  // play
-                self.sensor4data.append((self.sensor4.text! as NSString).integerValue)
-                
-                let start5 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                let end5 = aMessage.index(aMessage.startIndex, offsetBy: 16)
-                let range5 = start5..<end5
-                self.sensor5.text = aMessage[range5]  // play
-                self.sensor5data.append((self.sensor5.text! as NSString).integerValue)
-                
-                let start6 = aMessage.index(aMessage.startIndex, offsetBy: 16)
-                let end6 = aMessage.index(aMessage.startIndex, offsetBy: 19)
-                let range6 = start6..<end6
-                self.sensor6.text = aMessage[range6]  // play
-                self.sensor6data.append((self.sensor6.text! as NSString).integerValue)
+                if(aMessage.contains("*")){
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
+                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let range1 = start1..<end1
+                    self.sensor4.text = aMessage[range1]  // play
+                    self.sensor4data.append((self.sensor4.text! as NSString).floatValue)
+                    
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 8)
+                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                    let range2 = start2..<end2
+                    self.sensor5.text = aMessage[range2]  // play
+                    self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
+                    
+                    let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                    let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                    let range3 = start3..<end3
+                    self.sensor6.text = aMessage[range3]  // play
+                    self.sensor6data.append((self.sensor6.text! as NSString).floatValue)
+                }
             }
             self.consoleAsciiText = newAsciiText
+            
+            // drop some data to prevent memory out of usage
+            
+            if self.sensor1data.count > 20{
+                self.sensor1data = Array(self.sensor1data.suffix(20));
+            }
+            
+            if self.sensor2data.count > 20{
+                self.sensor2data = Array(self.sensor2data.suffix(20));
+            }
+            
+            if self.sensor3data.count > 20{
+                self.sensor3data = Array(self.sensor3data.suffix(20));
+            }
+            
+            if self.sensor4data.count > 20{
+                self.sensor4data = Array(self.sensor4data.suffix(20));
+            }
+            
+            if self.sensor5data.count > 20{
+                self.sensor5data = Array(self.sensor5data.suffix(20));
+            }
+            
+            if self.sensor6data.count > 20{
+                self.sensor6data = Array(self.sensor6data.suffix(20));
+            }
             
             if self.startedRecord {
                 self.recordData()
             }
-            if self.sensor1data.count != 0{
+            if self.sensor1data.count != 0 && self.sensor4data.count != 0{
                 self.calcStillTime()
                 self.updatePictures()
                 self.getMotion()
@@ -257,29 +292,41 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let curData4 = sensor4data[sensor4data.count-1]
         let curData5 = sensor5data[sensor5data.count-1]
         let curData6 = sensor6data[sensor6data.count-1]
-        print(curData1)
-        print(curData4)
+        
         if(curData1 > 2 || curData4 > 2){
-            self.shoulderStillTime = 0
+            self.shoulderStart = Date();
         }
-        else{
-            self.shoulderStillTime += 1
-        }
+        
         if(curData2 > 2 || curData5 > 2){
-            self.hipStillTime = 0
+            self.hipStart = Date();
         }
-        else{
-            self.hipStillTime += 1
-        }
+        
         if(curData3 > 2 || curData6 > 2){
-            self.feetStillTime = 0
+            self.feetStart = Date();
         }
-        else{
-            self.feetStillTime += 1
-        }
-        self.shoulderTime.text = "\(self.shoulderStillTime)"
-        self.hipTime.text = "\(self.hipStillTime)"
-        self.feetTime.text = "\(self.feetStillTime)"
+        
+        let interval : TimeInterval = 3 * 3600 + 42 * 60
+        
+        let latest1 = NSDate(timeInterval: interval, since: self.shoulderStart)
+        let difference1 = latest1.timeIntervalSince(self.shoulderStart)
+        let hours1 = Int(difference1) / 3600
+        let minutes1 = (Int(difference1) / 60) % 60
+        self.shoulderTime.text = "\(hours1) h \(minutes1) m"
+        self.shoulderStillTime = Int(difference1) / 60
+        
+        let latest2 = NSDate(timeInterval: interval, since: self.hipStart)
+        let difference2 = latest2.timeIntervalSince(self.hipStart)
+        let hours2 = Int(difference2) / 3600
+        let minutes2 = (Int(difference2) / 60) % 60
+        self.hipTime.text = "\(hours2) h \(minutes2) m"
+        self.hipStillTime = Int(difference2) / 60
+        
+        let latest3 = NSDate(timeInterval: interval, since: self.feetStart)
+        let difference3 = latest3.timeIntervalSince(self.feetStart)
+        let hours3 = Int(difference3) / 3600
+        let minutes3 = (Int(difference3) / 60) % 60
+        self.feetTime.text = "\(hours3) h \(minutes3) m"
+        self.feetStillTime = Int(difference3) / 60
     }
     
     func updatePictures(){
