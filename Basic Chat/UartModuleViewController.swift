@@ -316,20 +316,23 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         print("difference1: \(difference1)")
         let hours1 = Int(difference1) / 3600
         let minutes1 = (Int(difference1) / 60) % 60
-        self.shoulderTime.text = "\(hours1) h \(minutes1) m"
-        self.shoulderStillTime = Int(difference1) / 60
+        let second1 = (Int(difference1)) % 60
+        self.shoulderTime.text = "\(hours1) h \(minutes1) m \(second1) s"
+        self.shoulderStillTime = Int(difference1)
         
         let difference2 = Date().timeIntervalSince(self.hipStart)
         let hours2 = Int(difference2) / 3600
         let minutes2 = (Int(difference2) / 60) % 60
-        self.hipTime.text = "\(hours2) h \(minutes2) m"
-        self.hipStillTime = Int(difference2) / 60
+        let second2 = (Int(difference2)) % 60
+        self.hipTime.text = "\(hours2) h \(minutes2) m \(second2) s"
+        self.hipStillTime = Int(difference2)
         
         let difference3 = Date().timeIntervalSince(self.feetStart)
         let hours3 = Int(difference3) / 3600
         let minutes3 = (Int(difference3) / 60) % 60
-        self.feetTime.text = "\(hours3) h \(minutes3) m"
-        self.feetStillTime = Int(difference3) / 60
+        let second3 = (Int(difference3)) % 60
+        self.feetTime.text = "\(hours3) h \(minutes3) m \(second3) s"
+        self.feetStillTime = Int(difference3)
     }
     
     func updatePictures(){
@@ -337,28 +340,28 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         var shoulderImageName : String
         var legImageName : String
         var feetImageName : String
-        if(self.shoulderStillTime > 40){
+        if(self.shoulderStillTime > 20){
             shoulderImageName = "redbody.png"
         }
-        else if(self.shoulderStillTime > 20){
+        else if(self.shoulderStillTime > 10){
             shoulderImageName = "yellowbody.png"
         }
         else{
             shoulderImageName = "greenbody.png"
         }
-        if(self.hipStillTime > 40){
+        if(self.hipStillTime > 20){
             legImageName = "redleg.png"
         }
-        else if(self.hipStillTime > 20){
+        else if(self.hipStillTime > 10){
             legImageName = "yellowleg.png"
         }
         else{
             legImageName = "greenleg.png"
         }
-        if(self.feetStillTime > 40){
+        if(self.feetStillTime > 20){
             feetImageName = "redfeet.png"
         }
-        else if(self.feetStillTime > 20){
+        else if(self.feetStillTime > 10){
             feetImageName = "yellowfeet.png"
         }
         else{
