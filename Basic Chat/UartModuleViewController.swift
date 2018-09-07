@@ -16,14 +16,17 @@ import CoreBluetooth
 class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, UITextViewDelegate, UITextFieldDelegate {
     
     //View
-    @IBOutlet weak var headView: UIImageView!
-    @IBOutlet weak var bodyView: UIImageView!
-    @IBOutlet weak var legView: UIImageView!
-    @IBOutlet weak var feetView: UIImageView!
+
     @IBOutlet weak var sensorBackGround: UIImageView!
-    @IBOutlet weak var imageBackGround: UIImageView!
     @IBOutlet weak var aboutView: UIImageView!
     @IBOutlet weak var motionView: UIImageView!
+    @IBOutlet weak var figureView: UIImageView!
+    @IBOutlet weak var ULView: UIImageView!
+    @IBOutlet weak var URView: UIImageView!
+    @IBOutlet weak var MLView: UIImageView!
+    @IBOutlet weak var MRView: UIImageView!
+    @IBOutlet weak var BLView: UIImageView!
+    @IBOutlet weak var BRView: UIImageView!
     
     //UI
     @IBOutlet weak var scrollView: UIScrollView!
@@ -36,20 +39,32 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var histButton: UIButton!
     
-    @IBOutlet weak var hipTime: UILabel!
-    @IBOutlet weak var feetTime: UILabel!
-    @IBOutlet weak var shoulderTime: UILabel!
+
+    @IBOutlet weak var ULTime: UILabel!
+    @IBOutlet weak var URTime: UILabel!
+    @IBOutlet weak var MLTime: UILabel!
+    @IBOutlet weak var MRTime: UILabel!
+    @IBOutlet weak var BLTime: UILabel!
+    @IBOutlet weak var BRTime: UILabel!
     //Data
     var startedRecord : Bool = false
-    var shoulderStillTime : Int = 0
-    var hipStillTime : Int = 0
-    var feetStillTime : Int = 0
+    var ULStillTime : Int = 0
+    var URStillTime : Int = 0
+    var MLStillTime : Int = 0
+    var MRStillTime : Int = 0
+    var BLStillTime : Int = 0
+    var BRStillTime : Int = 0
+    
     var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
-    var shoulderStart = NSDate()
-    var hipStart = Date()
-    var feetStart = Date()
+    
+    var ULStart = Date()
+    var URStart = Date()
+    var MLStart = Date()
+    var MRStart = Date()
+    var BLStart = Date()
+    var BRStart = Date()
     
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
     //Data matrix
@@ -73,10 +88,10 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.sensorBackGround.layer.cornerRadius = 5
         self.sensorBackGround.layer.masksToBounds = true
         
-        self.imageBackGround.layer.borderWidth = 5
-        self.imageBackGround.layer.borderColor = UIColor.blue.cgColor
-        self.imageBackGround.layer.cornerRadius = 5
-        self.imageBackGround.layer.masksToBounds = true
+        self.figureView.layer.borderWidth = 5
+        self.figureView.layer.borderColor = UIColor.blue.cgColor
+        self.figureView.layer.cornerRadius = 5
+        self.figureView.layer.masksToBounds = true
         
         self.motionView.layer.borderWidth = 5
         self.motionView.layer.borderColor = UIColor.blue.cgColor
@@ -213,11 +228,12 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             
             // drop some data to prevent memory out of usage
             if self.sensor1data.count == 1{
-                self.shoulderStart = NSDate()
-                print("NSDate: " , self.shoulderStart)
-                
-                self.hipStart = Date()
-                self.feetStart = Date()
+                self.ULStart = Date()
+                self.URStart = Date()
+                self.MLStart = Date()
+                self.MRStart = Date()
+                self.BLStart = Date()
+                self.BRStart = Date()
             }
             
             if self.sensor1data.count > 20{
@@ -300,77 +316,134 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let curData5 = sensor5data[sensor5data.count-1]
         let curData6 = sensor6data[sensor6data.count-1]
         
-        if(curData1 > 2 || curData4 > 2){
-            self.shoulderStart = NSDate();
+        if(curData1 > 2){
+            self.ULStart = Date();
         }
         
-        if(curData2 > 2 || curData5 > 2){
-            self.hipStart = Date();
+        if(curData2 > 2){
+            self.MLStart = Date();
         }
         
-        if(curData3 > 2 || curData6 > 2){
-            self.feetStart = Date();
+        if(curData3 > 2){
+            self.BLStart = Date();
         }
         
-        let difference1 = Date().timeIntervalSince(self.shoulderStart as Date)
-        print("difference1: \(difference1)")
+        if(curData4 > 2){
+            self.URStart = Date();
+        }
+        
+        if(curData5 > 2){
+            self.MRStart = Date();
+        }
+        
+        if(curData6 > 2){
+            self.BRStart = Date();
+        }
+        
+        let difference1 = Date().timeIntervalSince(self.ULStart)
         let hours1 = Int(difference1) / 3600
         let minutes1 = (Int(difference1) / 60) % 60
         let second1 = (Int(difference1)) % 60
-        self.shoulderTime.text = "\(hours1) h \(minutes1) m \(second1) s"
-        self.shoulderStillTime = Int(difference1)
+        self.ULTime.text = "\(hours1) h \(minutes1) m \(second1) s"
+        self.ULStillTime = Int(difference1)
         
-        let difference2 = Date().timeIntervalSince(self.hipStart)
+        let difference2 = Date().timeIntervalSince(self.MLStart)
         let hours2 = Int(difference2) / 3600
         let minutes2 = (Int(difference2) / 60) % 60
         let second2 = (Int(difference2)) % 60
-        self.hipTime.text = "\(hours2) h \(minutes2) m \(second2) s"
-        self.hipStillTime = Int(difference2)
+        self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
+        self.MLStillTime = Int(difference2)
         
-        let difference3 = Date().timeIntervalSince(self.feetStart)
+        let difference3 = Date().timeIntervalSince(self.BLStart)
         let hours3 = Int(difference3) / 3600
         let minutes3 = (Int(difference3) / 60) % 60
         let second3 = (Int(difference3)) % 60
-        self.feetTime.text = "\(hours3) h \(minutes3) m \(second3) s"
-        self.feetStillTime = Int(difference3)
+        self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
+        self.BLStillTime = Int(difference3)
+        
+        let difference4 = Date().timeIntervalSince(self.URStart)
+        let hours4 = Int(difference4) / 3600
+        let minutes4 = (Int(difference4) / 60) % 60
+        let second4 = (Int(difference4)) % 60
+        self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
+        self.URStillTime = Int(difference4)
+        
+        let difference5 = Date().timeIntervalSince(self.MRStart)
+        let hours5 = Int(difference5) / 3600
+        let minutes5 = (Int(difference5) / 60) % 60
+        let second5 = (Int(difference5)) % 60
+        self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
+        self.MRStillTime = Int(difference5)
+        
+        let difference6 = Date().timeIntervalSince(self.BRStart)
+        let hours6 = Int(difference6) / 3600
+        let minutes6 = (Int(difference6) / 60) % 60
+        let second6 = (Int(difference6)) % 60
+        self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
+        self.BRStillTime = Int(difference6)
     }
     
     func updatePictures(){
-        let headImageName = "greenhead.png"
-        var shoulderImageName : String
-        var legImageName : String
-        var feetImageName : String
-        if(self.shoulderStillTime > 20){
-            shoulderImageName = "redbody.png"
+        // top left image view
+        if(self.ULStillTime > 40){
+            self.ULView.image = UIImage(named: "ulred.png")
         }
-        else if(self.shoulderStillTime > 10){
-            shoulderImageName = "yellowbody.png"
+        else if(self.ULStillTime > 20){
+            self.ULView.image = UIImage(named: "ulyel.png")
         }
         else{
-            shoulderImageName = "greenbody.png"
+            self.ULView.image = UIImage()
         }
-        if(self.hipStillTime > 20){
-            legImageName = "redleg.png"
+        // top right image view
+        if(self.URStillTime > 40){
+            self.URView.image = UIImage(named: "urred.png")
         }
-        else if(self.hipStillTime > 10){
-            legImageName = "yellowleg.png"
-        }
-        else{
-            legImageName = "greenleg.png"
-        }
-        if(self.feetStillTime > 20){
-            feetImageName = "redfeet.png"
-        }
-        else if(self.feetStillTime > 10){
-            feetImageName = "yellowfeet.png"
+        else if(self.URStillTime > 20){
+            self.URView.image = UIImage(named: "uryel.png")
         }
         else{
-            feetImageName = "greenfeet.png"
+            self.URView.image = UIImage()
         }
-        self.headView.image = UIImage(named: headImageName)
-        self.bodyView.image = UIImage(named: shoulderImageName)
-        self.legView.image = UIImage(named: legImageName)
-        self.feetView.image = UIImage(named: feetImageName)
+        // mid left image view
+        if(self.MLStillTime > 40){
+            self.MLView.image = UIImage(named: "mlred.png")
+        }
+        else if(self.MLStillTime > 20){
+            self.MLView.image = UIImage(named: "mlyel.png")
+        }
+        else{
+            self.MLView.image = UIImage()
+        }
+        // mid right image view
+        if(self.MRStillTime > 40){
+            self.MRView.image = UIImage(named: "mrred.png")
+        }
+        else if(self.MRStillTime > 20){
+            self.MRView.image = UIImage(named: "mryel.png")
+        }
+        else{
+            self.MRView.image = UIImage()
+        }
+        // bot left image view
+        if(self.BLStillTime > 40){
+            self.BLView.image = UIImage(named: "blred.png")
+        }
+        else if(self.BLStillTime > 20){
+            self.BLView.image = UIImage(named: "blyel.png")
+        }
+        else{
+            self.BLView.image = UIImage()
+        }
+        // bot right image view
+        if(self.BRStillTime > 40){
+            self.BRView.image = UIImage(named: "brred.png")
+        }
+        else if(self.BRStillTime > 20){
+            self.BRView.image = UIImage(named: "bryel.png")
+        }
+        else{
+            self.BRView.image = UIImage()
+        }
     }
     
     func getMotion(){
