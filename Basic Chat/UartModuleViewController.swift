@@ -38,6 +38,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var sensor6: UILabel!
     @IBOutlet weak var recordButton: UIButton!
     @IBOutlet weak var histButton: UIButton!
+    @IBOutlet weak var bootsSwitch: UISwitch!
+    @IBOutlet weak var bedExtiAlarmSwitch: UISwitch!
     
 
     @IBOutlet weak var ULTime: UILabel!
@@ -48,6 +50,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var BRTime: UILabel!
     //Data
     var startedRecord : Bool = false
+    var bootsSwitchisOn : Bool = false
     var ULStillTime : Int = 0
     var URStillTime : Int = 0
     var MLStillTime : Int = 0
@@ -182,6 +185,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             
             let aMessage = attribString.string
             
+            if self.bootsSwitch.isOn {
+                self.bootsSwitchisOn = true;
+            }
+            else{
+                self.bootsSwitchisOn = false;
+            }
+            
             if(aMessage.contains("#") || aMessage.contains("*")){
                 
                 if(aMessage.contains("#")){
@@ -197,10 +207,15 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     self.sensor2.text = aMessage[range2]  // play
                     self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
                     
-                    let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
-                    let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
-                    let range3 = start3..<end3
-                    self.sensor3.text = aMessage[range3]  // play
+                    if(!self.bootsSwitchisOn){
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                        let range3 = start3..<end3
+                        self.sensor3.text = aMessage[range3]  // play
+                    }
+                    else {
+                        self.sensor3.text = "0"
+                    }
                     self.sensor3data.append((self.sensor3.text! as NSString).floatValue)
                 }
                 
@@ -217,10 +232,15 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     self.sensor5.text = aMessage[range2]  // play
                     self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
                     
-                    let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
-                    let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
-                    let range3 = start3..<end3
-                    self.sensor6.text = aMessage[range3]  // play
+                    if(!self.bootsSwitchisOn){
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                        let range3 = start3..<end3
+                        self.sensor6.text = aMessage[range3]  // play
+                    }
+                    else{
+                        self.sensor6.text = "0"
+                    }
                     self.sensor6data.append((self.sensor6.text! as NSString).floatValue)
                 }
             }
@@ -425,24 +445,29 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.MRView.image = UIImage()
         }
         // bot left image view
-        if(self.BLStillTime > 40){
-            self.BLView.image = UIImage(named: "blred.png")
-        }
-        else if(self.BLStillTime > 20){
-            self.BLView.image = UIImage(named: "blyel.png")
-        }
-        else{
-            self.BLView.image = UIImage()
-        }
-        // bot right image view
-        if(self.BRStillTime > 40){
-            self.BRView.image = UIImage(named: "brred.png")
-        }
-        else if(self.BRStillTime > 20){
-            self.BRView.image = UIImage(named: "bryel.png")
-        }
-        else{
-            self.BRView.image = UIImage()
+        if(!self.bootsSwitchisOn){
+            if(self.BLStillTime > 40){
+                self.BLView.image = UIImage(named: "blred.png")
+            }
+            else if(self.BLStillTime > 20){
+                self.BLView.image = UIImage(named: "blyel.png")
+            }
+            else{
+                self.BLView.image = UIImage()
+            }
+            // bot right image view
+            if(self.BRStillTime > 40){
+                self.BRView.image = UIImage(named: "brred.png")
+            }
+            else if(self.BRStillTime > 20){
+                self.BRView.image = UIImage(named: "bryel.png")
+            }
+            else{
+                self.BRView.image = UIImage()
+            }
+        }else{
+            self.BLView.image = UIImage(named: "bootsleft.png")
+            self.BRView.image = UIImage(named: "bootsright.png")
         }
     }
     
