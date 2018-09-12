@@ -214,7 +214,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                         self.sensor3.text = aMessage[range3]  // play
                     }
                     else {
-                        self.sensor3.text = "0"
+                        self.sensor3.text = "0.000"
                     }
                     self.sensor3data.append((self.sensor3.text! as NSString).floatValue)
                 }
@@ -239,7 +239,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                         self.sensor6.text = aMessage[range3]  // play
                     }
                     else{
-                        self.sensor6.text = "0"
+                        self.sensor6.text = "0.000"
                     }
                     self.sensor6data.append((self.sensor6.text! as NSString).floatValue)
                 }
@@ -373,21 +373,24 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let second2 = (Int(difference2)) % 60
         self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
         self.MLStillTime = Int(difference2)
-        
+        if(!self.bootsSwitchisOn){
         let difference3 = Date().timeIntervalSince(self.BLStart)
         let hours3 = Int(difference3) / 3600
         let minutes3 = (Int(difference3) / 60) % 60
         let second3 = (Int(difference3)) % 60
         self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
         self.BLStillTime = Int(difference3)
-        
+        }
+        else{
+            self.BLTime.text = "N/A"
+            self.BLStart = Date()
+        }
         let difference4 = Date().timeIntervalSince(self.URStart)
         let hours4 = Int(difference4) / 3600
         let minutes4 = (Int(difference4) / 60) % 60
         let second4 = (Int(difference4)) % 60
         self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
         self.URStillTime = Int(difference4)
-        
         let difference5 = Date().timeIntervalSince(self.MRStart)
         let hours5 = Int(difference5) / 3600
         let minutes5 = (Int(difference5) / 60) % 60
@@ -395,12 +398,18 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
         self.MRStillTime = Int(difference5)
         
+        if(!self.bootsSwitchisOn){
         let difference6 = Date().timeIntervalSince(self.BRStart)
         let hours6 = Int(difference6) / 3600
         let minutes6 = (Int(difference6) / 60) % 60
         let second6 = (Int(difference6)) % 60
         self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
         self.BRStillTime = Int(difference6)
+        }
+        else{
+            self.BRTime.text = "N/A"
+            self.BRStart = Date()
+        }
     }
     
     func updatePictures(){
