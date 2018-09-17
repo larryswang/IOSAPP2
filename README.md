@@ -1,3 +1,9 @@
-# Basic-Chat
-Bluetooth Low Energy App for iOS using Swift.
-Looking to learn how Bluetooth Low Energy works in iOS & Swift 3? Well look no farther, we've got what you've been waiting for!
+# Lack of Motion Receiver Version 2
+
+Original Bluetooth NordicViewController From Adafruit, GitHub Page:
+<https://github.com/adafruit/Basic-Chat>
+
+This iOSAPP is for Lack of Motion system and method. Anything related with
+patent is confidential.
+
+For inquiries, please contact Shiyu (Larry) Wang shiyuw@umich.edu
