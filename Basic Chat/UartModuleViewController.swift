@@ -173,11 +173,12 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         NotificationCenter.default.removeObserver(self)
         
     }
-    
+    var allDataIn : Bool = false
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
             notification in
             let appendString = "\n"
+            
             let myFont = UIFont(name: "Helvetica Neue", size: 15.0)
             let myAttributes2 = [NSFontAttributeName: myFont!, NSForegroundColorAttributeName: UIColor.red]
             let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
@@ -195,6 +196,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             if(aMessage.contains("#") || aMessage.contains("*")){
                 
                 if(aMessage.contains("#")){
+                    self.allDataIn = false
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
@@ -220,6 +222,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 }
                 
                 if(aMessage.contains("*")){
+                    self.allDataIn = true
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
@@ -280,7 +283,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 self.sensor6data = Array(self.sensor6data.suffix(20));
             }
             
-            if self.startedRecord {
+            if self.startedRecord && self.allDataIn {
                 self.recordData()
             }
             if self.sensor1data.count != 0 && self.sensor4data.count != 0{
@@ -296,7 +299,12 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
         var exist = fileManager.fileExists(atPath: filePath1)
         //let pioneerString="\n"
-        exist = !exist
+        if(exist){
+            
+        }
+        else{
+            fileManager.createFile(atPath: filePath1, contents: nil, attributes: nil)
+        }
         
         /*if exist{
             try! pioneerString.write(toFile: filePath1, atomically: true, encoding: String.Encoding.utf8)
