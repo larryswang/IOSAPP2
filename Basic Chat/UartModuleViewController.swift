@@ -297,7 +297,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     func recordData(){
         let fileManager = FileManager.default
         let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
-        var exist = fileManager.fileExists(atPath: filePath1)
+        let exist = fileManager.fileExists(atPath: filePath1)
         //let pioneerString="\n"
         if(exist){
             
