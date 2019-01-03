@@ -197,20 +197,20 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 
                 if(aMessage.contains("#")){
                     self.allDataIn = false
-                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
                     self.sensor1.text = aMessage[range1]  // play
                     self.sensor1data.append((self.sensor1.text! as NSString).floatValue)
                     
-                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 8)
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
                     self.sensor2.text = aMessage[range2]  // play
                     self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
                     
                     if(!self.bootsSwitchisOn){
-                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
                         self.sensor3.text = aMessage[range3]  // play
@@ -223,20 +223,20 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 
                 if(aMessage.contains("*")){
                     self.allDataIn = true
-                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 2)
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
                     self.sensor4.text = aMessage[range1]  // play
                     self.sensor4data.append((self.sensor4.text! as NSString).floatValue)
                     
-                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 8)
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
                     self.sensor5.text = aMessage[range2]  // play
                     self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
                     
                     if(!self.bootsSwitchisOn){
-                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 14)
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
                         self.sensor6.text = aMessage[range3]  // play
