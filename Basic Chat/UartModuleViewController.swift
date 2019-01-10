@@ -78,6 +78,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var sensor5data : [Float] = []
     var sensor6data : [Float] = []
     
+    var sensor1ave : Float = 0
+    var sensor2ave : Float = 0
+    var sensor3ave : Float = 0
+    var sensor4ave : Float = 0
+    var sensor5ave : Float = 0
+    var sensor6ave : Float = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -121,7 +128,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             //stop record
             self.startedRecord = false
             (sender as! UIButton).isSelected = !(sender as! UIButton).isSelected
-            (sender as! UIButton).setTitle("RECORD", for:UIControlState.normal)
+            (sender as! UIButton).setTitle("RECORD", for:UIControl.State.normal)
         }else{
             let alertController = UIAlertController(title: "Create document name",
                                                     message: nil, preferredStyle: .alert)
@@ -137,7 +144,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             let okAction = UIAlertAction(title: "Ok", style: .default, handler: {
                 action in
-                (sender as! UIButton).setTitle("STOP", for:UIControlState.normal)
+                (sender as! UIButton).setTitle("STOP", for:UIControl.State.normal)
                 let login:NSString = alertController.textFields!.first!.text! as NSString
                 self.filePath="\( login).txt"
                 print(self.filePath)
@@ -153,7 +160,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     
     @objc func singleTap(){
         let alertView = UIAlertController(title: "About Msafety Lab", message:
-            "This APP is used for Lack of Motion prototype, for research use only. The Lack of Motion detecting system as well as algorithm is developed by Larry(Shiyu) Wang shiyuw@umich.edu, Biomechanics Research Lab, Mechanical Engineering of University of Michigan. Any individual as well as company must not copy without inquring.", preferredStyle: UIAlertControllerStyle.alert)
+            "This APP is used for Lack of Motion prototype, for research use only. The Lack of Motion detecting system as well as algorithm is developed by Larry(Shiyu) Wang shiyuw@umich.edu, Biomechanics Research Lab, Mechanical Engineering of University of Michigan. Any individual as well as company must not copy without inquring.", preferredStyle: UIAlertController.Style.alert)
         let OKAction = UIAlertAction(title: "OK", style:.default, handler:{_ in
             
         })
@@ -180,8 +187,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let appendString = "\n"
             
             let myFont = UIFont(name: "Helvetica Neue", size: 15.0)
-            let myAttributes2 = [NSFontAttributeName: myFont!, NSForegroundColorAttributeName: UIColor.red]
-            let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
+            let myAttributes2 = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): myFont!, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.red]
+            let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: convertToOptionalNSAttributedStringKeyDictionary(myAttributes2))
             let newAsciiText = NSMutableAttributedString(attributedString: self.consoleAsciiText!)
             
             let aMessage = attribString.string
@@ -200,20 +207,20 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
-                    self.sensor1.text = aMessage[range1]  // play
+                    self.sensor1.text = String(aMessage[range1])  // play
                     self.sensor1data.append((self.sensor1.text! as NSString).floatValue)
                     
                     let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
-                    self.sensor2.text = aMessage[range2]  // play
+                    self.sensor2.text = String(aMessage[range2])  // play
                     self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
                     
                     if(!self.bootsSwitchisOn){
                         let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
-                        self.sensor3.text = aMessage[range3]  // play
+                        self.sensor3.text = String(aMessage[range3])  // play
                     }
                     else {
                         self.sensor3.text = "0.000"
@@ -226,20 +233,20 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
-                    self.sensor4.text = aMessage[range1]  // play
+                    self.sensor4.text = String(aMessage[range1])  // play
                     self.sensor4data.append((self.sensor4.text! as NSString).floatValue)
                     
                     let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
-                    self.sensor5.text = aMessage[range2]  // play
+                    self.sensor5.text = String(aMessage[range2])  // play
                     self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
                     
                     if(!self.bootsSwitchisOn){
                         let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
-                        self.sensor6.text = aMessage[range3]  // play
+                        self.sensor6.text = String(aMessage[range3])  // play
                     }
                     else{
                         self.sensor6.text = "0.000"
@@ -259,28 +266,36 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 self.BRStart = Date()
             }
             
-            if self.sensor1data.count > 20{
-                self.sensor1data = Array(self.sensor1data.suffix(20));
+            let aveK : Int = 10
+            
+            if self.sensor1data.count > aveK{
+                self.sensor1data = Array(self.sensor1data.suffix(aveK))
+                self.sensor1ave = self.sensor1data.reduce(0, +) / Float(aveK)
             }
             
-            if self.sensor2data.count > 20{
-                self.sensor2data = Array(self.sensor2data.suffix(20));
+            if self.sensor2data.count > aveK{
+                self.sensor2data = Array(self.sensor2data.suffix(aveK))
+                self.sensor2ave = self.sensor2data.reduce(0, +) / Float(aveK)
             }
             
-            if self.sensor3data.count > 20{
-                self.sensor3data = Array(self.sensor3data.suffix(20));
+            if self.sensor3data.count > aveK{
+                self.sensor3data = Array(self.sensor3data.suffix(aveK))
+                self.sensor3ave = self.sensor3data.reduce(0, +) / Float(aveK)
             }
             
-            if self.sensor4data.count > 20{
-                self.sensor4data = Array(self.sensor4data.suffix(20));
+            if self.sensor4data.count > aveK{
+                self.sensor4data = Array(self.sensor4data.suffix(aveK))
+                self.sensor4ave = self.sensor4data.reduce(0, +) / Float(aveK)
             }
             
-            if self.sensor5data.count > 20{
-                self.sensor5data = Array(self.sensor5data.suffix(20));
+            if self.sensor5data.count > aveK{
+                self.sensor5data = Array(self.sensor5data.suffix(aveK))
+                self.sensor5ave = self.sensor5data.reduce(0, +) / Float(aveK)
             }
             
-            if self.sensor6data.count > 20{
-                self.sensor6data = Array(self.sensor6data.suffix(20));
+            if self.sensor6data.count > aveK{
+                self.sensor6data = Array(self.sensor6data.suffix(aveK))
+                self.sensor6ave = self.sensor6data.reduce(0, +) / Float(aveK)
             }
             
             if self.startedRecord && self.allDataIn {
@@ -344,27 +359,34 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let curData5 = sensor5data[sensor5data.count-1]
         let curData6 = sensor6data[sensor6data.count-1]
         
-        if(curData1 > 2){
+        let diff1 = curData1 - sensor1ave
+        let diff2 = curData2 - sensor2ave
+        let diff3 = curData3 - sensor3ave
+        let diff4 = curData4 - sensor4ave
+        let diff5 = curData5 - sensor5ave
+        let diff6 = curData6 - sensor6ave
+        
+        if(diff1 > 0.25){
             self.ULStart = Date();
         }
         
-        if(curData2 > 2){
+        if(diff2 > 0.25){
             self.MLStart = Date();
         }
         
-        if(curData3 > 2){
+        if(diff3 > 0.25){
             self.BLStart = Date();
         }
         
-        if(curData4 > 2){
+        if(diff4 > 0.25){
             self.URStart = Date();
         }
         
-        if(curData5 > 2){
+        if(diff5 > 0.25){
             self.MRStart = Date();
         }
         
-        if(curData6 > 2){
+        if(diff6 > 0.25){
             self.BRStart = Date();
         }
         
@@ -561,3 +583,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}
