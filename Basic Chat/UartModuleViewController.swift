@@ -89,28 +89,28 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var BRStart = Date()
     
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
+    
     //Data matrix
-    var sensor1data : [Float] = []
-    var sensor2data : [Float] = []
-    var sensor3data : [Float] = []
-    var sensor4data : [Float] = []
-    var sensor5data : [Float] = []
-    var sensor6data : [Float] = []
+    var rawData1 : [Float] = []
+    var rawData2 : [Float] = []
+    var rawData3 : [Float] = []
+    var rawData4 : [Float] = []
+    var rawData5 : [Float] = []
+    var rawData6 : [Float] = []
     
-    var sensor1ave : Float = 0
-    var sensor2ave : Float = 0
-    var sensor3ave : Float = 0
-    var sensor4ave : Float = 0
-    var sensor5ave : Float = 0
-    var sensor6ave : Float = 0
+    var data1 : Float = 0.0
+    var data2 : Float = 0.0
+    var data3 : Float = 0.0
+    var data4 : Float = 0.0
+    var data5 : Float = 0.0
+    var data6 : Float = 0.0
     
-    var sensor1sigma : Float = 0
-    var sensor2sigma : Float = 0
-    var sensor3sigma : Float = 0
-    var sensor4sigma : Float = 0
-    var sensor5sigma : Float = 0
-    var sensor6sigma : Float = 0
-    
+    var dataAve1 : Float = 0.0
+    var dataAve2 : Float = 0.0
+    var dataAve3 : Float = 0.0
+    var dataAve4 : Float = 0.0
+    var dataAve5 : Float = 0.0
+    var dataAve6 : Float = 0.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -208,25 +208,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         
     }
     
-    var calibrationFlag : Bool = false
-    func calibrate(){
-        self.sensor1sigma = self.sensor1data.std()
-        self.sensor2sigma = self.sensor2data.std()
-        self.sensor3sigma = self.sensor3data.std()
-        self.sensor4sigma = self.sensor4data.std()
-        self.sensor5sigma = self.sensor5data.std()
-        self.sensor6sigma = self.sensor6data.std()
-//        print("standard deviation for all sensors")
-//        print(self.sensor1sigma)
-//        print(self.sensor2sigma)
-//        print(self.sensor3sigma)
-//        print(self.sensor4sigma)
-//        print(self.sensor5sigma)
-//        print(self.sensor6sigma)
-        self.calibrationFlag = true
-    }
-    
     var allDataIn : Bool = false
+    
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
             notification in
@@ -253,25 +236,22 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
-                    self.sensor1.text = String(aMessage[range1])  // play
-                    self.sensor1data.append((self.sensor1.text! as NSString).floatValue)
+                    self.data1 = (String(aMessage[range1]) as NSString).floatValue
                     
                     let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
-                    self.sensor2.text = String(aMessage[range2])  // play
-                    self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
+                    self.data2 = (String(aMessage[range2]) as NSString).floatValue
                     
                     if(!self.bootsSwitchisOn){
                         let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
-                        self.sensor3.text = String(aMessage[range3])  // play
+                        self.data3 = (String(aMessage[range3]) as NSString).floatValue
                     }
                     else {
-                        self.sensor3.text = "0.000"
+                        self.data3 = 0.0
                     }
-                    self.sensor3data.append((self.sensor3.text! as NSString).floatValue)
                 }
                 
                 if(aMessage.contains("*")){
@@ -279,93 +259,62 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
                     let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let range1 = start1..<end1
-                    self.sensor4.text = String(aMessage[range1])  // play
-                    self.sensor4data.append((self.sensor4.text! as NSString).floatValue)
+                    self.data4 = (String(aMessage[range1]) as NSString).floatValue
                     
                     let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
                     let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                     let range2 = start2..<end2
-                    self.sensor5.text = String(aMessage[range2])  // play
-                    self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
-                    
+                    self.data5 = (String(aMessage[range2]) as NSString).floatValue
+                
                     if(!self.bootsSwitchisOn){
                         let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
                         let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
                         let range3 = start3..<end3
-                        self.sensor6.text = String(aMessage[range3])  // play
+                        self.data6 = (String(aMessage[range3]) as NSString).floatValue
                     }
                     else{
-                        self.sensor6.text = "0.000"
+                        self.data6 = 0.0
                     }
-                    self.sensor6data.append((self.sensor6.text! as NSString).floatValue)
                 }
             }
             self.consoleAsciiText = newAsciiText
             
-            if self.sensor1data.count < 10{
-                // the alert view
-                let alert = UIAlertController(title: "Calibrating", message: "The calibration lasts for around 10 seconds, please do not touch the bed during this period", preferredStyle: .alert)
-                self.present(alert, animated: true, completion: nil)
-                
-                // change to desired number of seconds (in this case 10 seconds)
-                let when = DispatchTime.now() + 10
-                DispatchQueue.main.asyncAfter(deadline: when){
-                    // your code with delay
-                    alert.dismiss(animated: true, completion: nil)
+            if self.allDataIn{
+                if self.rawData1.count < 100{
+                    self.rawData1.append(self.data1)
+                    self.rawData2.append(self.data2)
+                    self.rawData3.append(self.data3)
+                    self.rawData4.append(self.data4)
+                    self.rawData5.append(self.data5)
+                    self.rawData6.append(self.data6)
                 }
-            }
-            else{
-            
-                // drop some data to prevent memory out of usage
-                if self.sensor1data.count == 10 && self.calibrationFlag == false {
-                    self.ULStart = Date()
-                    self.URStart = Date()
-                    self.MLStart = Date()
-                    self.MRStart = Date()
-                    self.BLStart = Date()
-                    self.BRStart = Date()
-                    self.calibrate()
-                }
-                
-                let aveK : Int = 10
-                
-                if self.sensor1data.count > aveK{
-                    self.sensor1data = Array(self.sensor1data.suffix(aveK))
-                    self.sensor1ave = self.sensor1data.avg()
-                }
-                
-                if self.sensor2data.count > aveK{
-                    self.sensor2data = Array(self.sensor2data.suffix(aveK))
-                    self.sensor2ave = self.sensor2data.avg()
-                }
-                
-                if self.sensor3data.count > aveK{
-                    self.sensor3data = Array(self.sensor3data.suffix(aveK))
-                    self.sensor3ave = self.sensor3data.avg()
-                }
-                
-                if self.sensor4data.count > aveK{
-                    self.sensor4data = Array(self.sensor4data.suffix(aveK))
-                    self.sensor4ave = self.sensor4data.avg()
-                }
-                
-                if self.sensor5data.count > aveK{
-                    self.sensor5data = Array(self.sensor5data.suffix(aveK))
-                    self.sensor5ave = self.sensor5data.avg()
-                }
-                
-                if self.sensor6data.count > aveK{
-                    self.sensor6data = Array(self.sensor6data.suffix(aveK))
-                    self.sensor6ave = self.sensor6data.avg()
-                }
-                
-                if self.startedRecord && self.allDataIn {
-                    self.recordData()
-                }
-                if self.sensor1data.count != 0 && self.sensor4data.count != 0{
-                    self.calcStillTime()
+                else{
+                    self.dataAve1 = self.rawData1.avg()
+                    self.dataAve2 = self.rawData2.avg()
+                    self.dataAve3 = self.rawData3.avg()
+                    self.dataAve4 = self.rawData4.avg()
+                    self.dataAve5 = self.rawData5.avg()
+                    self.dataAve6 = self.rawData6.avg()
+                    
+                    self.rawData1.removeAll()
+                    self.rawData2.removeAll()
+                    self.rawData3.removeAll()
+                    self.rawData4.removeAll()
+                    self.rawData5.removeAll()
+                    self.rawData6.removeAll()
+                    
+                    self.sensor1.text = String(format: "%.03f", self.dataAve1)
+                    self.sensor2.text = String(format: "%.03f", self.dataAve2)
+                    self.sensor3.text = String(format: "%.03f", self.dataAve3)
+                    self.sensor4.text = String(format: "%.03f", self.dataAve4)
+                    self.sensor5.text = String(format: "%.03f", self.dataAve5)
+                    self.sensor6.text = String(format: "%.03f", self.dataAve6)
+                    
+                    if self.startedRecord{
+                        self.recordData()
+                    }
+                    //self.calcStillTime()
                     self.updatePictures()
-                    self.getMotion()
                 }
             }
         }
@@ -412,21 +361,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         fileHandle.write(appendedData!)
         fileHandle.closeFile()
     }
-    
+    /*
     func calcStillTime(){
-        let curData1 = self.sensor1data[sensor1data.count-1]
-        let curData2 = self.sensor2data[sensor2data.count-1]
-        let curData3 = self.sensor3data[sensor3data.count-1]
-        let curData4 = self.sensor4data[sensor4data.count-1]
-        let curData5 = self.sensor5data[sensor5data.count-1]
-        let curData6 = self.sensor6data[sensor6data.count-1]
-        
-        let diff1 = curData1 - self.sensor1ave
-        let diff2 = curData2 - self.sensor2ave
-        let diff3 = curData3 - self.sensor3ave
-        let diff4 = curData4 - self.sensor4ave
-        let diff5 = curData5 - self.sensor5ave
-        let diff6 = curData6 - self.sensor6ave
+        let diff1 = self.data1 - self.rawData1.avg()
+        let diff2 = self.data2 - self.rawData2.avg()
+        let diff3 = self.data3 - self.rawData3.avg()
+        let diff4 = self.data4 - self.rawData4.avg()
+        let diff5 = self.data5 - self.rawData5.avg()
+        let diff6 = self.data6 - self.rawData6.avg()
         
         if(diff1 > 3 * self.sensor1sigma){
             self.ULStart = Date();
@@ -530,7 +472,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.BRStart = Date()
         }
     }
-    
+    */
     func updatePictures(){
         // top left image view
         if(self.ULStillTime > 40){
@@ -597,9 +539,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.BLView.image = UIImage(named: "bootsleft.png")
             self.BRView.image = UIImage(named: "bootsright.png")
         }
-    }
-    
-    func getMotion(){
     }
     
     // Write functions
