@@ -216,13 +216,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         self.sensor4sigma = self.sensor4data.std()
         self.sensor5sigma = self.sensor5data.std()
         self.sensor6sigma = self.sensor6data.std()
-        print("standard deviation for all sensors")
-        print(self.sensor1sigma)
-        print(self.sensor2sigma)
-        print(self.sensor3sigma)
-        print(self.sensor4sigma)
-        print(self.sensor5sigma)
-        print(self.sensor6sigma)
+//        print("standard deviation for all sensors")
+//        print(self.sensor1sigma)
+//        print(self.sensor2sigma)
+//        print(self.sensor3sigma)
+//        print(self.sensor4sigma)
+//        print(self.sensor5sigma)
+//        print(self.sensor6sigma)
         self.calibrationFlag = true
     }
     
@@ -414,19 +414,19 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
     
     func calcStillTime(){
-        let curData1 = sensor1data[sensor1data.count-1]
-        let curData2 = sensor2data[sensor2data.count-1]
-        let curData3 = sensor3data[sensor3data.count-1]
-        let curData4 = sensor4data[sensor4data.count-1]
-        let curData5 = sensor5data[sensor5data.count-1]
-        let curData6 = sensor6data[sensor6data.count-1]
+        let curData1 = self.sensor1data[sensor1data.count-1]
+        let curData2 = self.sensor2data[sensor2data.count-1]
+        let curData3 = self.sensor3data[sensor3data.count-1]
+        let curData4 = self.sensor4data[sensor4data.count-1]
+        let curData5 = self.sensor5data[sensor5data.count-1]
+        let curData6 = self.sensor6data[sensor6data.count-1]
         
-        let diff1 = curData1 - sensor1ave
-        let diff2 = curData2 - sensor2ave
-        let diff3 = curData3 - sensor3ave
-        let diff4 = curData4 - sensor4ave
-        let diff5 = curData5 - sensor5ave
-        let diff6 = curData6 - sensor6ave
+        let diff1 = curData1 - self.sensor1ave
+        let diff2 = curData2 - self.sensor2ave
+        let diff3 = curData3 - self.sensor3ave
+        let diff4 = curData4 - self.sensor4ave
+        let diff5 = curData5 - self.sensor5ave
+        let diff6 = curData6 - self.sensor6ave
         
         if(diff1 > 3 * self.sensor1sigma){
             self.ULStart = Date();
@@ -452,7 +452,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.BRStart = Date();
         }
         
-        if(diff1 < -10 * self.sensor1sigma || diff2 < -10 * self.sensor2sigma || diff3 < -10 * self.sensor3sigma || diff4 < -10 * self.sensor4sigma || diff5 < -10 * self.sensor5sigma || diff6 < -10 * self.sensor6sigma){
+        if(diff1 < -15 * self.sensor1sigma || diff2 < -15 * self.sensor2sigma || diff3 < -15 * self.sensor3sigma || diff4 < -15 * self.sensor4sigma || diff5 < -15 * self.sensor5sigma || diff6 < -15 * self.sensor6sigma || curData1 < -9 || curData2 < -9 || curData3 < -9 || curData4 < -9 || curData5 < -9 || curData6 < -9){
             
             let alert = UIAlertController(title: "Caution", message: "BED EGRESS ALERT!", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
