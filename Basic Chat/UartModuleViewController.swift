@@ -112,6 +112,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var dataAve5 : Float = 0.0
     var dataAve6 : Float = 0.0
     
+    var dataDev1 : Float = 0.0
+    var dataDev2 : Float = 0.0
+    var dataDev3 : Float = 0.0
+    var dataDev4 : Float = 0.0
+    var dataDev5 : Float = 0.0
+    var dataDev6 : Float = 0.0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -209,6 +216,15 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
     
     var allDataIn : Bool = false
+    var diff1 : Float = 0.0
+    var diff2 : Float = 0.0
+    var diff3 : Float = 0.0
+    var diff4 : Float = 0.0
+    var diff5 : Float = 0.0
+    var diff6 : Float = 0.0
+    
+    var timeInterval : Int = 0
+    var calibrationCount : Int = 0
     
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
@@ -280,21 +296,48 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.consoleAsciiText = newAsciiText
             
             if self.allDataIn{
-                if self.rawData1.count < 100{
+                if self.calibrationCount < 1000{
                     self.rawData1.append(self.data1)
                     self.rawData2.append(self.data2)
                     self.rawData3.append(self.data3)
                     self.rawData4.append(self.data4)
                     self.rawData5.append(self.data5)
                     self.rawData6.append(self.data6)
+                    
+                    self.calibrationCount += 1
+                    
+                    let alert = UIAlertController(title: "Caution", message: "Calibrating.. this will take around 10 seconds, do not touch during this time!", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+                        switch action.style{
+                        case .default:
+                            print("default")
+                            
+                        case .cancel:
+                            print("cancel")
+                            self.alertShowing = false
+                            
+                        case .destructive:
+                            print("destructive")
+                            
+                            
+                        }}))
+                    self.present(alert, animated: true, completion: nil)
+                    
+                    // change to desired number of seconds (in this case 5 seconds)
+                    let when = DispatchTime.now() + 10
+                    DispatchQueue.main.asyncAfter(deadline: when){
+                        // your code with delay
+                        alert.dismiss(animated: true, completion: nil)
+                    }
                 }
-                else{
-                    self.dataAve1 = self.rawData1.avg()
-                    self.dataAve2 = self.rawData2.avg()
-                    self.dataAve3 = self.rawData3.avg()
-                    self.dataAve4 = self.rawData4.avg()
-                    self.dataAve5 = self.rawData5.avg()
-                    self.dataAve6 = self.rawData6.avg()
+                else if self.calibrationCount == 1000{
+                    print("10s later, calibrating them")
+                    self.dataDev1 = self.rawData1.std()
+                    self.dataDev2 = self.rawData2.std()
+                    self.dataDev3 = self.rawData3.std()
+                    self.dataDev4 = self.rawData4.std()
+                    self.dataDev5 = self.rawData5.std()
+                    self.dataDev6 = self.rawData6.std()
                     
                     self.rawData1.removeAll()
                     self.rawData2.removeAll()
@@ -303,18 +346,79 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     self.rawData5.removeAll()
                     self.rawData6.removeAll()
                     
-                    self.sensor1.text = String(format: "%.03f", self.dataAve1)
-                    self.sensor2.text = String(format: "%.03f", self.dataAve2)
-                    self.sensor3.text = String(format: "%.03f", self.dataAve3)
-                    self.sensor4.text = String(format: "%.03f", self.dataAve4)
-                    self.sensor5.text = String(format: "%.03f", self.dataAve5)
-                    self.sensor6.text = String(format: "%.03f", self.dataAve6)
-                    
-                    if self.startedRecord{
-                        self.recordData()
+                    self.calibrationCount = 1001
+                }
+                else{
+                    if self.rawData1.count < 100{
+                        self.rawData1.append(self.data1)
+                        self.rawData2.append(self.data2)
+                        self.rawData3.append(self.data3)
+                        self.rawData4.append(self.data4)
+                        self.rawData5.append(self.data5)
+                        self.rawData6.append(self.data6)
+                        
+                        self.diff1 += pow(max(0, abs(self.data1 - self.dataAve1) - 3 * self.dataDev1), 2)
+                        self.diff2 += pow(max(0, abs(self.data2 - self.dataAve2) - 3 * self.dataDev2), 2)
+                        self.diff3 += pow(max(0, abs(self.data3 - self.dataAve3) - 3 * self.dataDev3), 2)
+                        self.diff4 += pow(max(0, abs(self.data4 - self.dataAve4) - 3 * self.dataDev4), 2)
+                        self.diff5 += pow(max(0, abs(self.data5 - self.dataAve5) - 3 * self.dataDev5), 2)
+                        self.diff6 += pow(max(0, abs(self.data6 - self.dataAve6) - 3 * self.dataDev6), 2)
+                        
                     }
-                    //self.calcStillTime()
-                    self.updatePictures()
+                    else{
+                        // self.rawData.count == 100
+                        // every 1s, calculate data average, display and write to file
+                        // clear rawData: 100 points
+                        self.timeInterval += 1
+                        
+                        self.dataAve1 = self.rawData1.avg()
+                        self.dataAve2 = self.rawData2.avg()
+                        self.dataAve3 = self.rawData3.avg()
+                        self.dataAve4 = self.rawData4.avg()
+                        self.dataAve5 = self.rawData5.avg()
+                        self.dataAve6 = self.rawData6.avg()
+                        
+                        self.rawData1.removeAll()
+                        self.rawData2.removeAll()
+                        self.rawData3.removeAll()
+                        self.rawData4.removeAll()
+                        self.rawData5.removeAll()
+                        self.rawData6.removeAll()
+                        
+                        self.sensor1.text = String(format: "%.03f", self.dataAve1)
+                        self.sensor2.text = String(format: "%.03f", self.dataAve2)
+                        self.sensor3.text = String(format: "%.03f", self.dataAve3)
+                        self.sensor4.text = String(format: "%.03f", self.dataAve4)
+                        self.sensor5.text = String(format: "%.03f", self.dataAve5)
+                        self.sensor6.text = String(format: "%.03f", self.dataAve6)
+                        
+                        if self.timeInterval == 5{
+                            // every 5s, check if there is a ceizure
+                            // clear diff data
+                            print("trace here!")
+                            print(self.diff1)
+                            print(self.diff2)
+                            print(self.diff3)
+                            print(self.diff4)
+                            print(self.diff5)
+                            print(self.diff6)
+                            
+                            self.diff1 = 0
+                            self.diff2 = 0
+                            self.diff3 = 0
+                            self.diff4 = 0
+                            self.diff5 = 0
+                            self.diff6 = 0
+                            
+                            self.timeInterval = 0
+                        }
+                        
+                        if self.startedRecord{
+                            self.recordData()
+                        }
+                        //self.calcStillTime()
+                        self.updatePictures()
+                    }
                 }
             }
         }

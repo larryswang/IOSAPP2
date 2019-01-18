@@ -256,7 +256,7 @@ class BLECentralViewController : UIViewController, CBCentralManagerDelegate, CBP
         if characteristic == rxCharacteristic {
             if let ASCIIstring = NSString(data: characteristic.value!, encoding: String.Encoding.utf8.rawValue) {
                 characteristicASCIIValue = ASCIIstring
-                print("Value Recieved: \((characteristicASCIIValue as String))")
+                //print("Value Recieved: \((characteristicASCIIValue as String))")
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Notify"), object: nil)
                 
             }
