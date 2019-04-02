@@ -225,6 +225,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     
     var timeInterval : Int = 0
     var calibrationCount : Int = 0
+    var displayCount = 0
     
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
@@ -295,131 +296,150 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             }
             self.consoleAsciiText = newAsciiText
             
-            if self.allDataIn{
-                if self.calibrationCount < 1000{
-                    self.rawData1.append(self.data1)
-                    self.rawData2.append(self.data2)
-                    self.rawData3.append(self.data3)
-                    self.rawData4.append(self.data4)
-                    self.rawData5.append(self.data5)
-                    self.rawData6.append(self.data6)
-                    
-                    self.calibrationCount += 1
-                    
-                    let alert = UIAlertController(title: "Caution", message: "Calibrating.. this will take around 10 seconds, do not touch during this time!", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                        switch action.style{
-                        case .default:
-                            print("default")
-                            
-                        case .cancel:
-                            print("cancel")
-                            self.alertShowing = false
-                            
-                        case .destructive:
-                            print("destructive")
-                            
-                            
-                        }}))
-                    self.present(alert, animated: true, completion: nil)
-                    
-                    // change to desired number of seconds (in this case 5 seconds)
-                    let when = DispatchTime.now() + 10
-                    DispatchQueue.main.asyncAfter(deadline: when){
-                        // your code with delay
-                        alert.dismiss(animated: true, completion: nil)
-                    }
-                }
-                else if self.calibrationCount == 1000{
-                    print("10s later, calibrating them")
-                    self.dataDev1 = self.rawData1.std()
-                    self.dataDev2 = self.rawData2.std()
-                    self.dataDev3 = self.rawData3.std()
-                    self.dataDev4 = self.rawData4.std()
-                    self.dataDev5 = self.rawData5.std()
-                    self.dataDev6 = self.rawData6.std()
-                    
-                    self.rawData1.removeAll()
-                    self.rawData2.removeAll()
-                    self.rawData3.removeAll()
-                    self.rawData4.removeAll()
-                    self.rawData5.removeAll()
-                    self.rawData6.removeAll()
-                    
-                    self.calibrationCount = 1001
-                }
-                else{
-                    if self.rawData1.count < 100{
-                        self.rawData1.append(self.data1)
-                        self.rawData2.append(self.data2)
-                        self.rawData3.append(self.data3)
-                        self.rawData4.append(self.data4)
-                        self.rawData5.append(self.data5)
-                        self.rawData6.append(self.data6)
-                        
-                        self.diff1 += pow(max(0, abs(self.data1 - self.dataAve1) - 3 * self.dataDev1), 2)
-                        self.diff2 += pow(max(0, abs(self.data2 - self.dataAve2) - 3 * self.dataDev2), 2)
-                        self.diff3 += pow(max(0, abs(self.data3 - self.dataAve3) - 3 * self.dataDev3), 2)
-                        self.diff4 += pow(max(0, abs(self.data4 - self.dataAve4) - 3 * self.dataDev4), 2)
-                        self.diff5 += pow(max(0, abs(self.data5 - self.dataAve5) - 3 * self.dataDev5), 2)
-                        self.diff6 += pow(max(0, abs(self.data6 - self.dataAve6) - 3 * self.dataDev6), 2)
-                        
-                    }
-                    else{
-                        // self.rawData.count == 100
-                        // every 1s, calculate data average, display and write to file
-                        // clear rawData: 100 points
-                        self.timeInterval += 1
-                        
-                        self.dataAve1 = self.rawData1.avg()
-                        self.dataAve2 = self.rawData2.avg()
-                        self.dataAve3 = self.rawData3.avg()
-                        self.dataAve4 = self.rawData4.avg()
-                        self.dataAve5 = self.rawData5.avg()
-                        self.dataAve6 = self.rawData6.avg()
-                        
-                        self.rawData1.removeAll()
-                        self.rawData2.removeAll()
-                        self.rawData3.removeAll()
-                        self.rawData4.removeAll()
-                        self.rawData5.removeAll()
-                        self.rawData6.removeAll()
-                        
-                        self.sensor1.text = String(format: "%.03f", self.dataAve1)
-                        self.sensor2.text = String(format: "%.03f", self.dataAve2)
-                        self.sensor3.text = String(format: "%.03f", self.dataAve3)
-                        self.sensor4.text = String(format: "%.03f", self.dataAve4)
-                        self.sensor5.text = String(format: "%.03f", self.dataAve5)
-                        self.sensor6.text = String(format: "%.03f", self.dataAve6)
-                        
-                        if self.timeInterval == 5{
-                            // every 5s, check if there is a ceizure
-                            // clear diff data
-                            print("trace here!")
-                            print(self.diff1)
-                            print(self.diff2)
-                            print(self.diff3)
-                            print(self.diff4)
-                            print(self.diff5)
-                            print(self.diff6)
-                            
-                            self.diff1 = 0
-                            self.diff2 = 0
-                            self.diff3 = 0
-                            self.diff4 = 0
-                            self.diff5 = 0
-                            self.diff6 = 0
-                            
-                            self.timeInterval = 0
-                        }
-                        
-                        if self.startedRecord{
-                            self.recordData()
-                        }
-                        //self.calcStillTime()
-                        self.updatePictures()
-                    }
-                }
+            if(self.displayCount < 100){
+                
+            }
+            
+//            if self.allDataIn{
+//                if self.calibrationCount < 1000{
+//                    self.rawData1.append(self.data1)
+//                    self.rawData2.append(self.data2)
+//                    self.rawData3.append(self.data3)
+//                    self.rawData4.append(self.data4)
+//                    self.rawData5.append(self.data5)
+//                    self.rawData6.append(self.data6)
+//
+//                    self.calibrationCount += 1
+//
+//                    let alert = UIAlertController(title: "Caution", message: "Calibrating.. this will take around 10 seconds, do not touch during this time!", preferredStyle: .alert)
+//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+//                        switch action.style{
+//                        case .default:
+//                            print("default")
+//
+//                        case .cancel:
+//                            print("cancel")
+//                            self.alertShowing = false
+//
+//                        case .destructive:
+//                            print("destructive")
+//
+//
+//                        }}))
+//                    self.present(alert, animated: true, completion: nil)
+//
+//                    // change to desired number of seconds (in this case 1 seconds)
+//                    let when = DispatchTime.now() + 10
+//                    DispatchQueue.main.asyncAfter(deadline: when){
+//                        // your code with delay
+//                        alert.dismiss(animated: true, completion: nil)
+//                    }
+//                }
+//                else if self.calibrationCount == 1000{
+//                    print("10s later, calibrating them")
+//                    self.dataDev1 = self.rawData1.std()
+//                    self.dataDev2 = self.rawData2.std()
+//                    self.dataDev3 = self.rawData3.std()
+//                    self.dataDev4 = self.rawData4.std()
+//                    self.dataDev5 = self.rawData5.std()
+//                    self.dataDev6 = self.rawData6.std()
+//
+//                    self.rawData1.removeAll()
+//                    self.rawData2.removeAll()
+//                    self.rawData3.removeAll()
+//                    self.rawData4.removeAll()
+//                    self.rawData5.removeAll()
+//                    self.rawData6.removeAll()
+//
+//                    self.calibrationCount = 1001
+//                }
+//                else{
+//                    if self.rawData1.count < 100{
+//                        self.rawData1.append(self.data1)
+//                        self.rawData2.append(self.data2)
+//                        self.rawData3.append(self.data3)
+//                        self.rawData4.append(self.data4)
+//                        self.rawData5.append(self.data5)
+//                        self.rawData6.append(self.data6)
+//
+//                        self.diff1 += pow(max(0, abs(self.data1 - self.dataAve1) - 3 * self.dataDev1), 2)
+//                        self.diff2 += pow(max(0, abs(self.data2 - self.dataAve2) - 3 * self.dataDev2), 2)
+//                        self.diff3 += pow(max(0, abs(self.data3 - self.dataAve3) - 3 * self.dataDev3), 2)
+//                        self.diff4 += pow(max(0, abs(self.data4 - self.dataAve4) - 3 * self.dataDev4), 2)
+//                        self.diff5 += pow(max(0, abs(self.data5 - self.dataAve5) - 3 * self.dataDev5), 2)
+//                        self.diff6 += pow(max(0, abs(self.data6 - self.dataAve6) - 3 * self.dataDev6), 2)
+//
+//                    }
+//                    else{
+//                        // self.rawData.count == 100
+//                        // every 1s, calculate data average, display and write to file
+//                        // clear rawData: 100 points
+//                        self.timeInterval += 1
+//
+//                        self.dataAve1 = self.rawData1.avg()
+//                        self.dataAve2 = self.rawData2.avg()
+//                        self.dataAve3 = self.rawData3.avg()
+//                        self.dataAve4 = self.rawData4.avg()
+//                        self.dataAve5 = self.rawData5.avg()
+//                        self.dataAve6 = self.rawData6.avg()
+//
+//                        self.rawData1.removeAll()
+//                        self.rawData2.removeAll()
+//                        self.rawData3.removeAll()
+//                        self.rawData4.removeAll()
+//                        self.rawData5.removeAll()
+//                        self.rawData6.removeAll()
+//
+//                        self.sensor1.text = String(format: "%.03f", self.dataAve1)
+//                        self.sensor2.text = String(format: "%.03f", self.dataAve2)
+//                        self.sensor3.text = String(format: "%.03f", self.dataAve3)
+//                        self.sensor4.text = String(format: "%.03f", self.dataAve4)
+//                        self.sensor5.text = String(format: "%.03f", self.dataAve5)
+//                        self.sensor6.text = String(format: "%.03f", self.dataAve6)
+//
+//                        if self.timeInterval == 1{
+//                            // every 1s, check if there is a ceizure
+//                            // clear diff data
+//
+//                            let now = Date()
+//                            let outputFormatter = DateFormatter()
+//                            outputFormatter.dateFormat = "HH:mm:ss.SSS"
+//                            let timeString = outputFormatter.string(from: now)
+//                            let info = "\(timeString) \(self.diff1) \(self.diff2) \(self.diff3) \(self.diff4) \(self.diff5) \(self.diff6)"
+//                            print(info)
+//
+//                            self.diff1 = 0
+//                            self.diff2 = 0
+//                            self.diff3 = 0
+//                            self.diff4 = 0
+//                            self.diff5 = 0
+//                            self.diff6 = 0
+//
+//                            self.timeInterval = 0
+//                        }
+//
+//                        if self.startedRecord{
+//                            self.recordData()
+//                        }
+//                        self.calcStillTime()
+//                        self.updatePictures()
+//                    }
+//                }
+//            }
+//            self.displayCount += 1
+//            if(self.displayCount == 100){
+//                self.sensor1.text = String(self.data1)
+//                self.sensor2.text = String(self.data2)
+//                self.sensor3.text = String(self.data3)
+//                self.sensor4.text = String(self.data4)
+//                self.sensor5.text = String(self.data5)
+//                self.sensor6.text = String(self.data6)
+//                self.displayCount = 0
+//            }
+            
+            
+            if self.startedRecord{
+                self.recordData()
             }
         }
     }
@@ -445,14 +465,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
         let timeString = outputFormatter.string(from: now)
-        let value1 = sensor1.text
-        let value2 = sensor2.text
-        let value3 = sensor3.text
-        let value4 = sensor4.text
-        let value5 = sensor5.text
-        let value6 = sensor6.text
-        let debugValue = "MVL"
-        let info = "\(timeString) \(value1 ?? debugValue) \(value2 ?? debugValue) \(value3 ?? debugValue) \(value4 ?? debugValue) \(value5 ?? debugValue) \(value6 ?? debugValue)\n"
+        let value1 = String(describing: self.data1)
+        let value2 = String(describing: self.data2)
+        let value3 = String(describing: self.data3)
+        let value4 = String(describing: self.data4)
+        let value5 = String(describing: self.data5)
+        let value6 = String(describing: self.data6)
+        // let debugValue = "MVL"
+        let info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
         let manager = FileManager.default
         let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
         let docPath = urlsForDocDirectory[0]
@@ -465,185 +485,185 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         fileHandle.write(appendedData!)
         fileHandle.closeFile()
     }
-    /*
-    func calcStillTime(){
-        let diff1 = self.data1 - self.rawData1.avg()
-        let diff2 = self.data2 - self.rawData2.avg()
-        let diff3 = self.data3 - self.rawData3.avg()
-        let diff4 = self.data4 - self.rawData4.avg()
-        let diff5 = self.data5 - self.rawData5.avg()
-        let diff6 = self.data6 - self.rawData6.avg()
-        
-        if(diff1 > 3 * self.sensor1sigma){
-            self.ULStart = Date();
-        }
-        
-        if(diff2 >  3 * self.sensor2sigma){
-            self.MLStart = Date();
-        }
-        
-        if(diff3 >  3 * self.sensor3sigma){
-            self.BLStart = Date();
-        }
-        
-        if(diff4 >  3 * self.sensor4sigma){
-            self.URStart = Date();
-        }
-        
-        if(diff5 >  3 * self.sensor5sigma){
-            self.MRStart = Date();
-        }
-        
-        if(diff6 >  3 * self.sensor6sigma){
-            self.BRStart = Date();
-        }
-        
-        if(diff1 < -15 * self.sensor1sigma || diff2 < -15 * self.sensor2sigma || diff3 < -15 * self.sensor3sigma || diff4 < -15 * self.sensor4sigma || diff5 < -15 * self.sensor5sigma || diff6 < -15 * self.sensor6sigma || curData1 < -9 || curData2 < -9 || curData3 < -9 || curData4 < -9 || curData5 < -9 || curData6 < -9){
-            
-            let alert = UIAlertController(title: "Caution", message: "BED EGRESS ALERT!", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-                switch action.style{
-                case .default:
-                    print("default")
-                    
-                case .cancel:
-                    print("cancel")
-                    self.alertShowing = false
-                    
-                case .destructive:
-                    print("destructive")
-                    
-                    
-                }}))
-            self.present(alert, animated: true, completion: nil)
-            
-            // change to desired number of seconds (in this case 5 seconds)
-            let when = DispatchTime.now() + 5
-            DispatchQueue.main.asyncAfter(deadline: when){
-                // your code with delay
-                alert.dismiss(animated: true, completion: nil)
-            }
-        }
-        
-        let difference1 = Date().timeIntervalSince(self.ULStart)
-        let hours1 = Int(difference1) / 3600
-        let minutes1 = (Int(difference1) / 60) % 60
-        let second1 = (Int(difference1)) % 60
-        self.ULTime.text = "\(hours1) h \(minutes1) m \(second1) s"
-        self.ULStillTime = Int(difference1)
-        
-        let difference2 = Date().timeIntervalSince(self.MLStart)
-        let hours2 = Int(difference2) / 3600
-        let minutes2 = (Int(difference2) / 60) % 60
-        let second2 = (Int(difference2)) % 60
-        self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
-        self.MLStillTime = Int(difference2)
-        if(!self.bootsSwitchisOn){
-        let difference3 = Date().timeIntervalSince(self.BLStart)
-        let hours3 = Int(difference3) / 3600
-        let minutes3 = (Int(difference3) / 60) % 60
-        let second3 = (Int(difference3)) % 60
-        self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
-        self.BLStillTime = Int(difference3)
-        }
-        else{
-            self.BLTime.text = "N/A"
-            self.BLStart = Date()
-        }
-        let difference4 = Date().timeIntervalSince(self.URStart)
-        let hours4 = Int(difference4) / 3600
-        let minutes4 = (Int(difference4) / 60) % 60
-        let second4 = (Int(difference4)) % 60
-        self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
-        self.URStillTime = Int(difference4)
-        let difference5 = Date().timeIntervalSince(self.MRStart)
-        let hours5 = Int(difference5) / 3600
-        let minutes5 = (Int(difference5) / 60) % 60
-        let second5 = (Int(difference5)) % 60
-        self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
-        self.MRStillTime = Int(difference5)
-        
-        if(!self.bootsSwitchisOn){
-        let difference6 = Date().timeIntervalSince(self.BRStart)
-        let hours6 = Int(difference6) / 3600
-        let minutes6 = (Int(difference6) / 60) % 60
-        let second6 = (Int(difference6)) % 60
-        self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
-        self.BRStillTime = Int(difference6)
-        }
-        else{
-            self.BRTime.text = "N/A"
-            self.BRStart = Date()
-        }
-    }
-    */
-    func updatePictures(){
-        // top left image view
-        if(self.ULStillTime > 40){
-            self.ULView.image = UIImage(named: "ulred.png")
-        }
-        else if(self.ULStillTime > 20){
-            self.ULView.image = UIImage(named: "ulyel.png")
-        }
-        else{
-            self.ULView.image = UIImage()
-        }
-        // top right image view
-        if(self.URStillTime > 40){
-            self.URView.image = UIImage(named: "urred.png")
-        }
-        else if(self.URStillTime > 20){
-            self.URView.image = UIImage(named: "uryel.png")
-        }
-        else{
-            self.URView.image = UIImage()
-        }
-        // mid left image view
-        if(self.MLStillTime > 40){
-            self.MLView.image = UIImage(named: "mlred.png")
-        }
-        else if(self.MLStillTime > 20){
-            self.MLView.image = UIImage(named: "mlyel.png")
-        }
-        else{
-            self.MLView.image = UIImage()
-        }
-        // mid right image view
-        if(self.MRStillTime > 40){
-            self.MRView.image = UIImage(named: "mrred.png")
-        }
-        else if(self.MRStillTime > 20){
-            self.MRView.image = UIImage(named: "mryel.png")
-        }
-        else{
-            self.MRView.image = UIImage()
-        }
-        // bot left image view
-        if(!self.bootsSwitchisOn){
-            if(self.BLStillTime > 40){
-                self.BLView.image = UIImage(named: "blred.png")
-            }
-            else if(self.BLStillTime > 20){
-                self.BLView.image = UIImage(named: "blyel.png")
-            }
-            else{
-                self.BLView.image = UIImage()
-            }
-            // bot right image view
-            if(self.BRStillTime > 40){
-                self.BRView.image = UIImage(named: "brred.png")
-            }
-            else if(self.BRStillTime > 20){
-                self.BRView.image = UIImage(named: "bryel.png")
-            }
-            else{
-                self.BRView.image = UIImage()
-            }
-        }else{
-            self.BLView.image = UIImage(named: "bootsleft.png")
-            self.BRView.image = UIImage(named: "bootsright.png")
-        }
-    }
+    
+//    func calcStillTime(){
+//        let diff1 = self.data1 - self.rawData1.avg()
+//        let diff2 = self.data2 - self.rawData2.avg()
+//        let diff3 = self.data3 - self.rawData3.avg()
+//        let diff4 = self.data4 - self.rawData4.avg()
+//        let diff5 = self.data5 - self.rawData5.avg()
+//        let diff6 = self.data6 - self.rawData6.avg()
+//
+//        if(diff1 > 3 * self.sensor1sigma){
+//            self.ULStart = Date();
+//        }
+//
+//        if(diff2 >  3 * self.sensor2sigma){
+//            self.MLStart = Date();
+//        }
+//
+//        if(diff3 >  3 * self.sensor3sigma){
+//            self.BLStart = Date();
+//        }
+//
+//        if(diff4 >  3 * self.sensor4sigma){
+//            self.URStart = Date();
+//        }
+//
+//        if(diff5 >  3 * self.sensor5sigma){
+//            self.MRStart = Date();
+//        }
+//
+//        if(diff6 >  3 * self.sensor6sigma){
+//            self.BRStart = Date();
+//        }
+//
+////        if(diff1 < -15 * self.sensor1sigma || diff2 < -15 * self.sensor2sigma || diff3 < -15 * self.sensor3sigma || diff4 < -15 * self.sensor4sigma || diff5 < -15 * self.sensor5sigma || diff6 < -15 * self.sensor6sigma || curData1 < -9 || curData2 < -9 || curData3 < -9 || curData4 < -9 || curData5 < -9 || curData6 < -9){
+////
+////            let alert = UIAlertController(title: "Caution", message: "BED EGRESS ALERT!", preferredStyle: .alert)
+////            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+////                switch action.style{
+////                case .default:
+////                    print("default")
+////
+////                case .cancel:
+////                    print("cancel")
+////                    self.alertShowing = false
+////
+////                case .destructive:
+////                    print("destructive")
+////
+////
+////                }}))
+////            self.present(alert, animated: true, completion: nil)
+////
+////            // change to desired number of seconds (in this case 5 seconds)
+////            let when = DispatchTime.now() + 5
+////            DispatchQueue.main.asyncAfter(deadline: when){
+////                // your code with delay
+////                alert.dismiss(animated: true, completion: nil)
+////            }
+////        }
+//
+//        let difference1 = Date().timeIntervalSince(self.ULStart)
+//        let hours1 = Int(difference1) / 3600
+//        let minutes1 = (Int(difference1) / 60) % 60
+//        let second1 = (Int(difference1)) % 60
+//        self.ULTime.text = "\(hours1) h \(minutes1) m \(second1) s"
+//        self.ULStillTime = Int(difference1)
+//
+//        let difference2 = Date().timeIntervalSince(self.MLStart)
+//        let hours2 = Int(difference2) / 3600
+//        let minutes2 = (Int(difference2) / 60) % 60
+//        let second2 = (Int(difference2)) % 60
+//        self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
+//        self.MLStillTime = Int(difference2)
+//        if(!self.bootsSwitchisOn){
+//        let difference3 = Date().timeIntervalSince(self.BLStart)
+//        let hours3 = Int(difference3) / 3600
+//        let minutes3 = (Int(difference3) / 60) % 60
+//        let second3 = (Int(difference3)) % 60
+//        self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
+//        self.BLStillTime = Int(difference3)
+//        }
+//        else{
+//            self.BLTime.text = "N/A"
+//            self.BLStart = Date()
+//        }
+//        let difference4 = Date().timeIntervalSince(self.URStart)
+//        let hours4 = Int(difference4) / 3600
+//        let minutes4 = (Int(difference4) / 60) % 60
+//        let second4 = (Int(difference4)) % 60
+//        self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
+//        self.URStillTime = Int(difference4)
+//        let difference5 = Date().timeIntervalSince(self.MRStart)
+//        let hours5 = Int(difference5) / 3600
+//        let minutes5 = (Int(difference5) / 60) % 60
+//        let second5 = (Int(difference5)) % 60
+//        self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
+//        self.MRStillTime = Int(difference5)
+//
+//        if(!self.bootsSwitchisOn){
+//        let difference6 = Date().timeIntervalSince(self.BRStart)
+//        let hours6 = Int(difference6) / 3600
+//        let minutes6 = (Int(difference6) / 60) % 60
+//        let second6 = (Int(difference6)) % 60
+//        self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
+//        self.BRStillTime = Int(difference6)
+//        }
+//        else{
+//            self.BRTime.text = "N/A"
+//            self.BRStart = Date()
+//        }
+//    }
+    
+//    func updatePictures(){
+//        // top left image view
+//        if(self.ULStillTime > 40){
+//            self.ULView.image = UIImage(named: "ulred.png")
+//        }
+//        else if(self.ULStillTime > 20){
+//            self.ULView.image = UIImage(named: "ulyel.png")
+//        }
+//        else{
+//            self.ULView.image = UIImage()
+//        }
+//        // top right image view
+//        if(self.URStillTime > 40){
+//            self.URView.image = UIImage(named: "urred.png")
+//        }
+//        else if(self.URStillTime > 20){
+//            self.URView.image = UIImage(named: "uryel.png")
+//        }
+//        else{
+//            self.URView.image = UIImage()
+//        }
+//        // mid left image view
+//        if(self.MLStillTime > 40){
+//            self.MLView.image = UIImage(named: "mlred.png")
+//        }
+//        else if(self.MLStillTime > 20){
+//            self.MLView.image = UIImage(named: "mlyel.png")
+//        }
+//        else{
+//            self.MLView.image = UIImage()
+//        }
+//        // mid right image view
+//        if(self.MRStillTime > 40){
+//            self.MRView.image = UIImage(named: "mrred.png")
+//        }
+//        else if(self.MRStillTime > 20){
+//            self.MRView.image = UIImage(named: "mryel.png")
+//        }
+//        else{
+//            self.MRView.image = UIImage()
+//        }
+//        // bot left image view
+//        if(!self.bootsSwitchisOn){
+//            if(self.BLStillTime > 40){
+//                self.BLView.image = UIImage(named: "blred.png")
+//            }
+//            else if(self.BLStillTime > 20){
+//                self.BLView.image = UIImage(named: "blyel.png")
+//            }
+//            else{
+//                self.BLView.image = UIImage()
+//            }
+//            // bot right image view
+//            if(self.BRStillTime > 40){
+//                self.BRView.image = UIImage(named: "brred.png")
+//            }
+//            else if(self.BRStillTime > 20){
+//                self.BRView.image = UIImage(named: "bryel.png")
+//            }
+//            else{
+//                self.BRView.image = UIImage()
+//            }
+//        }else{
+//            self.BLView.image = UIImage(named: "bootsleft.png")
+//            self.BRView.image = UIImage(named: "bootsright.png")
+//        }
+//    }
     
     // Write functions
     func writeValue(data: String){
