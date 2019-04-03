@@ -58,7 +58,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var histButton: UIButton!
     @IBOutlet weak var bootsSwitch: UISwitch!
     @IBOutlet weak var bedExtiAlarmSwitch: UISwitch!
-    
+    var startedRecord : Bool = false
+    var bootsSwitchisOn : Bool = false
 
     @IBOutlet weak var ULTime: UILabel!
     @IBOutlet weak var URTime: UILabel!
@@ -66,9 +67,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var MRTime: UILabel!
     @IBOutlet weak var BLTime: UILabel!
     @IBOutlet weak var BRTime: UILabel!
-    //Data
-    var startedRecord : Bool = false
-    var bootsSwitchisOn : Bool = false
+
     var ULStillTime : Int = 0
     var URStillTime : Int = 0
     var MLStillTime : Int = 0
@@ -79,7 +78,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var filePath : String = ""
     var peripheralManager: CBPeripheralManager?
     var peripheral: CBPeripheral!
-    var alertShowing : Bool = false
     
     var ULStart = Date()
     var URStart = Date()
@@ -90,7 +88,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
     
-    //Data matrix
+    // keep most recent 100 data
     var rawData1 : [Float] = []
     var rawData2 : [Float] = []
     var rawData3 : [Float] = []
@@ -98,6 +96,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var rawData5 : [Float] = []
     var rawData6 : [Float] = []
     
+    // current data from all sensors
     var data1 : Float = 0.0
     var data2 : Float = 0.0
     var data3 : Float = 0.0
@@ -105,19 +104,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var data5 : Float = 0.0
     var data6 : Float = 0.0
     
-    var dataAve1 : Float = 0.0
-    var dataAve2 : Float = 0.0
-    var dataAve3 : Float = 0.0
-    var dataAve4 : Float = 0.0
-    var dataAve5 : Float = 0.0
-    var dataAve6 : Float = 0.0
+    // once reaches windowSize, update dash, clear current count, and save to file
+    let WINDOWSIZE = 100
+    var curWindowSize = 0
     
-    var dataDev1 : Float = 0.0
-    var dataDev2 : Float = 0.0
-    var dataDev3 : Float = 0.0
-    var dataDev4 : Float = 0.0
-    var dataDev5 : Float = 0.0
-    var dataDev6 : Float = 0.0
+    // once reaches max file size, create new file and save to it
+    let MAXFILESIZE = 1000
+    var curFileSize = 0
+    var curFileCount = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -181,7 +175,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 (sender as! UIButton).setTitle("STOP", for:UIControl.State.normal)
                 let login:NSString = alertController.textFields!.first!.text! as NSString
                 self.filePath="\( login).txt"
-                print(self.filePath)
                 weakSelf?.startedRecord = true
             })
             alertController.addAction(cancelAction)
@@ -216,16 +209,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
     
     var allDataIn : Bool = false
-    var diff1 : Float = 0.0
-    var diff2 : Float = 0.0
-    var diff3 : Float = 0.0
-    var diff4 : Float = 0.0
-    var diff5 : Float = 0.0
-    var diff6 : Float = 0.0
-    
-    var timeInterval : Int = 0
-    var calibrationCount : Int = 0
-    var displayCount = 0
     
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
@@ -296,174 +279,41 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             }
             self.consoleAsciiText = newAsciiText
             
-            if(self.displayCount < 100){
+            if self.allDataIn{
+                // append raw data into raw data array
+                self.rawData1.append(self.data1)
+                self.rawData2.append(self.data2)
+                self.rawData3.append(self.data3)
+                self.rawData4.append(self.data4)
+                self.rawData5.append(self.data5)
+                self.rawData6.append(self.data6)
                 
-            }
-            
-//            if self.allDataIn{
-//                if self.calibrationCount < 1000{
-//                    self.rawData1.append(self.data1)
-//                    self.rawData2.append(self.data2)
-//                    self.rawData3.append(self.data3)
-//                    self.rawData4.append(self.data4)
-//                    self.rawData5.append(self.data5)
-//                    self.rawData6.append(self.data6)
-//
-//                    self.calibrationCount += 1
-//
-//                    let alert = UIAlertController(title: "Caution", message: "Calibrating.. this will take around 10 seconds, do not touch during this time!", preferredStyle: .alert)
-//                    alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//                        switch action.style{
-//                        case .default:
-//                            print("default")
-//
-//                        case .cancel:
-//                            print("cancel")
-//                            self.alertShowing = false
-//
-//                        case .destructive:
-//                            print("destructive")
-//
-//
-//                        }}))
-//                    self.present(alert, animated: true, completion: nil)
-//
-//                    // change to desired number of seconds (in this case 1 seconds)
-//                    let when = DispatchTime.now() + 10
-//                    DispatchQueue.main.asyncAfter(deadline: when){
-//                        // your code with delay
-//                        alert.dismiss(animated: true, completion: nil)
-//                    }
-//                }
-//                else if self.calibrationCount == 1000{
-//                    print("10s later, calibrating them")
-//                    self.dataDev1 = self.rawData1.std()
-//                    self.dataDev2 = self.rawData2.std()
-//                    self.dataDev3 = self.rawData3.std()
-//                    self.dataDev4 = self.rawData4.std()
-//                    self.dataDev5 = self.rawData5.std()
-//                    self.dataDev6 = self.rawData6.std()
-//
-//                    self.rawData1.removeAll()
-//                    self.rawData2.removeAll()
-//                    self.rawData3.removeAll()
-//                    self.rawData4.removeAll()
-//                    self.rawData5.removeAll()
-//                    self.rawData6.removeAll()
-//
-//                    self.calibrationCount = 1001
-//                }
-//                else{
-//                    if self.rawData1.count < 100{
-//                        self.rawData1.append(self.data1)
-//                        self.rawData2.append(self.data2)
-//                        self.rawData3.append(self.data3)
-//                        self.rawData4.append(self.data4)
-//                        self.rawData5.append(self.data5)
-//                        self.rawData6.append(self.data6)
-//
-//                        self.diff1 += pow(max(0, abs(self.data1 - self.dataAve1) - 3 * self.dataDev1), 2)
-//                        self.diff2 += pow(max(0, abs(self.data2 - self.dataAve2) - 3 * self.dataDev2), 2)
-//                        self.diff3 += pow(max(0, abs(self.data3 - self.dataAve3) - 3 * self.dataDev3), 2)
-//                        self.diff4 += pow(max(0, abs(self.data4 - self.dataAve4) - 3 * self.dataDev4), 2)
-//                        self.diff5 += pow(max(0, abs(self.data5 - self.dataAve5) - 3 * self.dataDev5), 2)
-//                        self.diff6 += pow(max(0, abs(self.data6 - self.dataAve6) - 3 * self.dataDev6), 2)
-//
-//                    }
-//                    else{
-//                        // self.rawData.count == 100
-//                        // every 1s, calculate data average, display and write to file
-//                        // clear rawData: 100 points
-//                        self.timeInterval += 1
-//
-//                        self.dataAve1 = self.rawData1.avg()
-//                        self.dataAve2 = self.rawData2.avg()
-//                        self.dataAve3 = self.rawData3.avg()
-//                        self.dataAve4 = self.rawData4.avg()
-//                        self.dataAve5 = self.rawData5.avg()
-//                        self.dataAve6 = self.rawData6.avg()
-//
-//                        self.rawData1.removeAll()
-//                        self.rawData2.removeAll()
-//                        self.rawData3.removeAll()
-//                        self.rawData4.removeAll()
-//                        self.rawData5.removeAll()
-//                        self.rawData6.removeAll()
-//
-//                        self.sensor1.text = String(format: "%.03f", self.dataAve1)
-//                        self.sensor2.text = String(format: "%.03f", self.dataAve2)
-//                        self.sensor3.text = String(format: "%.03f", self.dataAve3)
-//                        self.sensor4.text = String(format: "%.03f", self.dataAve4)
-//                        self.sensor5.text = String(format: "%.03f", self.dataAve5)
-//                        self.sensor6.text = String(format: "%.03f", self.dataAve6)
-//
-//                        if self.timeInterval == 1{
-//                            // every 1s, check if there is a ceizure
-//                            // clear diff data
-//
-//                            let now = Date()
-//                            let outputFormatter = DateFormatter()
-//                            outputFormatter.dateFormat = "HH:mm:ss.SSS"
-//                            let timeString = outputFormatter.string(from: now)
-//                            let info = "\(timeString) \(self.diff1) \(self.diff2) \(self.diff3) \(self.diff4) \(self.diff5) \(self.diff6)"
-//                            print(info)
-//
-//                            self.diff1 = 0
-//                            self.diff2 = 0
-//                            self.diff3 = 0
-//                            self.diff4 = 0
-//                            self.diff5 = 0
-//                            self.diff6 = 0
-//
-//                            self.timeInterval = 0
-//                        }
-//
-//                        if self.startedRecord{
-//                            self.recordData()
-//                        }
-//                        self.calcStillTime()
-//                        self.updatePictures()
-//                    }
-//                }
-//            }
-//            self.displayCount += 1
-//            if(self.displayCount == 100){
-//                self.sensor1.text = String(self.data1)
-//                self.sensor2.text = String(self.data2)
-//                self.sensor3.text = String(self.data3)
-//                self.sensor4.text = String(self.data4)
-//                self.sensor5.text = String(self.data5)
-//                self.sensor6.text = String(self.data6)
-//                self.displayCount = 0
-//            }
-            
-            
-            if self.startedRecord{
-                self.recordData()
+                // record data if it started
+                if self.startedRecord{
+                    self.recordData()
+                }
             }
         }
     }
     
     func recordData(){
+        // create file manager and create file name
         let fileManager = FileManager.default
-        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
-        let exist = fileManager.fileExists(atPath: filePath1)
-        //let pioneerString="\n"
-        if(exist){
-            
+        if(self.curFileSize == self.MAXFILESIZE){
+            self.curFileCount += 1
+            self.curFileSize = 0
         }
-        else{
+        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)-\(self.curFileCount)"
+        let exist = fileManager.fileExists(atPath: filePath1)
+        if(!exist){
             fileManager.createFile(atPath: filePath1, contents: nil, attributes: nil)
         }
-        
-        /*if exist{
-            try! pioneerString.write(toFile: filePath1, atomically: true, encoding: String.Encoding.utf8)
-            print(filePath1)
-            
-        }*/
+
+        // create string to write
         let now = Date()
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
+        
         let timeString = outputFormatter.string(from: now)
         let value1 = String(describing: self.data1)
         let value2 = String(describing: self.data2)
@@ -471,13 +321,36 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let value4 = String(describing: self.data4)
         let value5 = String(describing: self.data5)
         let value6 = String(describing: self.data6)
-        // let debugValue = "MVL"
-        let info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
-        let manager = FileManager.default
-        let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
-        let docPath = urlsForDocDirectory[0]
-        let file = docPath.appendingPathComponent(self.filePath)
-        print(file)
+        var info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
+        self.curFileSize += 1
+        
+        // append average info if necessary
+        if self.curWindowSize == self.WINDOWSIZE{
+            print("reaches max window size!")
+            self.sensor1.text = "\(self.rawData1.avg())"
+            self.sensor2.text = "\(self.rawData2.avg())"
+            self.sensor3.text = "\(self.rawData3.avg())"
+            self.sensor4.text = "\(self.rawData4.avg())"
+            self.sensor5.text = "\(self.rawData5.avg())"
+            self.sensor6.text = "\(self.rawData6.avg())"
+            self.rawData1.removeAll()
+            self.rawData2.removeAll()
+            self.rawData3.removeAll()
+            self.rawData4.removeAll()
+            self.rawData5.removeAll()
+            self.rawData6.removeAll()
+            self.curWindowSize = 0
+            // append average info into string
+            info = "\(info)AVE\(timeString) \(self.sensor1.text) \(self.sensor2.text) \(self.sensor3.text) + \(self.sensor4.text) \(self.sensor5.text) \(self.sensor6.text)"
+        }
+        else{
+            self.curWindowSize += 1
+        }
+        
+//        let urlsForDocDirectory = fileManager.urls(for:.documentDirectory, in:.userDomainMask)
+//        let docPath = urlsForDocDirectory[0]
+//        let file = docPath.appendingPathComponent(self.filePath)
+//        print(file)
         
         let appendedData = info.data(using: String.Encoding.utf8, allowLossyConversion: true)
         let fileHandle :FileHandle = FileHandle(forWritingAtPath: filePath1)!
