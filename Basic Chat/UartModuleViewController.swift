@@ -176,7 +176,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 (sender as! UIButton).setTitle("STOP", for:UIControl.State.normal)
                 let login:NSString = alertController.textFields!.first!.text! as NSString
                 self.filePath="\( login).txt"
-                print(self.filePath)
                 weakSelf?.startedRecord = true
             })
             alertController.addAction(cancelAction)
@@ -265,10 +264,9 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                         self.sensor6.text = "0.000"
                         self.sensor6mat.append(self.sensor6data)
                     }
-            }
+                }
             self.consoleAsciiText = newAsciiText
             
-            // drop some data to prevent memory out of usage
             if self.sensor1mat.count == 1{
                 self.ULStart = Date()
                 self.URStart = Date()
@@ -277,48 +275,32 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 self.BLStart = Date()
                 self.BRStart = Date()
             }
-            let WINDOWSIZE = 100
-            if self.sensor1mat.count > WINDOWSIZE{
-                self.sensor1.text = String(format: "%.3f", self.sensor1mat.average)
-                self.sensor1mat.removeAll()
-            }
-            
-            if self.sensor2mat.count > WINDOWSIZE{
-                self.sensor2.text = String(format: "%.3f", self.sensor2mat.average)
-                self.sensor2mat.removeAll()
-            }
-            
-            if self.sensor3mat.count > WINDOWSIZE{
-                self.sensor3.text = String(format: "%.3f", self.sensor3mat.average)
-                self.sensor3mat.removeAll()
-            }
-            
-            if self.sensor4mat.count > WINDOWSIZE{
-                self.sensor4.text = String(format: "%.3f", self.sensor4mat.average)
-                self.sensor4mat.removeAll()
-            }
-            
-            if self.sensor5mat.count > WINDOWSIZE{
-                
-                self.sensor5.text = String(format: "%.3f", self.sensor5mat.average)
-                self.sensor5mat.removeAll()
-            }
-            
-            if self.sensor6mat.count > WINDOWSIZE{
-                
-                self.sensor6.text = String(format: "%.0001f", self.sensor6mat.average)
-                self.sensor6mat.removeAll()
-            }
             
             if self.startedRecord && self.allDataIn {
                 self.recordData()
             }
-//            if self.sensor1data.count != 0 && self.sensor4data.count != 0{
-//                self.calcStillTime()
-//                self.updatePictures()
-//                self.getMotion()
-//            }
-        }
+                
+            let WINDOWSIZE = 100
+            if self.allDataIn && self.sensor1mat.count == WINDOWSIZE{
+                self.sensor1.text = String(format: "%.3f", self.sensor1mat.average)
+                self.sensor1mat.removeAll()
+                
+                self.sensor2.text = String(format: "%.3f", self.sensor2mat.average)
+                self.sensor2mat.removeAll()
+                
+                self.sensor3.text = String(format: "%.3f", self.sensor3mat.average)
+                self.sensor3mat.removeAll()
+                
+                self.sensor4.text = String(format: "%.3f", self.sensor4mat.average)
+                self.sensor4mat.removeAll()
+                
+                self.sensor5.text = String(format: "%.3f", self.sensor5mat.average)
+                self.sensor5mat.removeAll()
+                
+                self.sensor6.text = String(format: "%.3f", self.sensor6mat.average)
+                self.sensor6mat.removeAll()
+            }
+            }
         }
     }
     
@@ -334,11 +316,6 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             fileManager.createFile(atPath: filePath1, contents: nil, attributes: nil)
         }
         
-        /*if exist{
-            try! pioneerString.write(toFile: filePath1, atomically: true, encoding: String.Encoding.utf8)
-            print(filePath1)
-            
-        }*/
         let now = Date()
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
@@ -349,12 +326,17 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let value4 = String(self.sensor4data)
         let value5 = String(self.sensor5data)
         let value6 = String(self.sensor6data)
-        let info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
-        let manager = FileManager.default
-        let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
-        let docPath = urlsForDocDirectory[0]
-        let file = docPath.appendingPathComponent(self.filePath)
-        print(file)
+        var info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
+        let WINDOWSIZE = 100
+        if self.sensor1mat.count == WINDOWSIZE{
+            let avvalue1 = String(self.sensor1mat.average)
+            let avvalue2 = String(self.sensor2mat.average)
+            let avvalue3 = String(self.sensor3mat.average)
+            let avvalue4 = String(self.sensor4mat.average)
+            let avvalue5 = String(self.sensor5mat.average)
+            let avvalue6 = String(self.sensor6mat.average)
+            info = "\(info)AVE\(timeString) \(avvalue1) \(avvalue2) \(avvalue3) \(avvalue4) \(avvalue5) \(avvalue6)\n"
+        }
         
         let appendedData = info.data(using: String.Encoding.utf8, allowLossyConversion: true)
         let fileHandle :FileHandle = FileHandle(forWritingAtPath: filePath1)!
