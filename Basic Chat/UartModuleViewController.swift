@@ -6,14 +6,42 @@
 //  Copyright © 2016 Vanguard Logic LLC. All rights reserved.
 //
 
+extension String {
+    func substring(from: Int, to: Int) -> String {
+        let start = index(startIndex, offsetBy: from)
+        let end = index(start, offsetBy: to - from)
+        return String(self[start ..< end])
+    }
+    
+    func substring(range: NSRange) -> String {
+        return substring(from: range.lowerBound, to: range.upperBound)
+    }
+}
 
+extension Collection where Element: Numeric {
+    /// Returns the total sum of all elements in the array
+    var total: Element { return reduce(0, +) }
+}
 
+extension Collection where Element: BinaryInteger {
+    /// Returns the average of all elements in the array
+    var average: Double {
+        return isEmpty ? 0 : Double(total) / Double(count)
+    }
+}
 
+extension Collection where Element: BinaryFloatingPoint {
+    /// Returns the average of all elements in the array
+    var average: Element {
+        return isEmpty ? 0 : total / Element(count)
+    }
+}
 
 import UIKit
 import CoreBluetooth
 
 class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, UITextViewDelegate, UITextFieldDelegate {
+    
     
     //View
 
@@ -70,13 +98,21 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var BRStart = Date()
     
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
-    //Data matrix
-    var sensor1data : [Float] = []
-    var sensor2data : [Float] = []
-    var sensor3data : [Float] = []
-    var sensor4data : [Float] = []
-    var sensor5data : [Float] = []
-    var sensor6data : [Float] = []
+    //raw data point
+    var sensor1data : Float = 0
+    var sensor2data : Float = 0
+    var sensor3data : Float = 0
+    var sensor4data : Float = 0
+    var sensor5data : Float = 0
+    var sensor6data : Float = 0
+    
+    //raw data matrix
+    var sensor1mat : [Float] = []
+    var sensor2mat : [Float] = []
+    var sensor3mat : [Float] = []
+    var sensor4mat : [Float] = []
+    var sensor5mat : [Float] = []
+    var sensor6mat : [Float] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -121,7 +157,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             //stop record
             self.startedRecord = false
             (sender as! UIButton).isSelected = !(sender as! UIButton).isSelected
-            (sender as! UIButton).setTitle("RECORD", for:UIControlState.normal)
+            (sender as! UIButton).setTitle("RECORD", for:UIControl.State.normal)
         }else{
             let alertController = UIAlertController(title: "Create document name",
                                                     message: nil, preferredStyle: .alert)
@@ -137,7 +173,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
             let okAction = UIAlertAction(title: "Ok", style: .default, handler: {
                 action in
-                (sender as! UIButton).setTitle("STOP", for:UIControlState.normal)
+                (sender as! UIButton).setTitle("STOP", for:UIControl.State.normal)
                 let login:NSString = alertController.textFields!.first!.text! as NSString
                 self.filePath="\( login).txt"
                 print(self.filePath)
@@ -153,7 +189,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     
     @objc func singleTap(){
         let alertView = UIAlertController(title: "About Msafety Lab", message:
-            "This APP is used for Lack of Motion prototype, for research use only. The Lack of Motion detecting system as well as algorithm is developed by Larry(Shiyu) Wang shiyuw@umich.edu, Biomechanics Research Lab, Mechanical Engineering of University of Michigan. Any individual as well as company must not copy without inquring.", preferredStyle: UIAlertControllerStyle.alert)
+            "This APP is used for Lack of Motion prototype, for research use only. The Lack of Motion detecting system as well as algorithm is developed by Larry(Shiyu) Wang shiyuw@umich.edu, Biomechanics Research Lab, Mechanical Engineering of University of Michigan. Any individual as well as company must not copy without inquring.", preferredStyle: UIAlertController.Style.alert)
         let OKAction = UIAlertAction(title: "OK", style:.default, handler:{_ in
             
         })
@@ -180,7 +216,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let appendString = "\n"
             
             let myFont = UIFont(name: "Helvetica Neue", size: 15.0)
-            let myAttributes2 = [NSFontAttributeName: myFont!, NSForegroundColorAttributeName: UIColor.red]
+            let myAttributes2 = [NSAttributedString.Key.font: myFont!, NSAttributedString.Key.foregroundColor: UIColor.red]
             let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
             let newAsciiText = NSMutableAttributedString(attributedString: self.consoleAsciiText!)
             
@@ -197,60 +233,43 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 
                 if(aMessage.contains("#")){
                     self.allDataIn = false
-                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
-                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                    let range1 = start1..<end1
-                    self.sensor1.text = aMessage[range1]  // play
-                    self.sensor1data.append((self.sensor1.text! as NSString).floatValue)
+                    self.sensor1data = Float(aMessage.substring(from: 1, to: 7)) ?? 0
+                    self.sensor1mat.append(self.sensor1data)
                     
-                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                    let range2 = start2..<end2
-                    self.sensor2.text = aMessage[range2]  // play
-                    self.sensor2data.append((self.sensor2.text! as NSString).floatValue)
+                    self.sensor2data = Float(aMessage.substring(from:7, to: 13)) ?? 0
+                    self.sensor2mat.append(self.sensor2data)
                     
                     if(!self.bootsSwitchisOn){
-                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
-                        let range3 = start3..<end3
-                        self.sensor3.text = aMessage[range3]  // play
+                        self.sensor3data = Float(aMessage.substring(from:13, to: 19)) ?? 0
+                        self.sensor3mat.append(self.sensor3data)
                     }
                     else {
                         self.sensor3.text = "0.000"
+                        self.sensor3mat.append(self.sensor3data)
                     }
-                    self.sensor3data.append((self.sensor3.text! as NSString).floatValue)
                 }
                 
                 if(aMessage.contains("*")){
                     self.allDataIn = true
-                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
-                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                    let range1 = start1..<end1
-                    self.sensor4.text = aMessage[range1]  // play
-                    self.sensor4data.append((self.sensor4.text! as NSString).floatValue)
+                    self.sensor4data = Float(aMessage.substring(from: 2, to: 7)) ?? 0
+                    self.sensor4mat.append(self.sensor4data)
                     
-                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
-                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                    let range2 = start2..<end2
-                    self.sensor5.text = aMessage[range2]  // play
-                    self.sensor5data.append((self.sensor5.text! as NSString).floatValue)
+                    self.sensor5data = Float(aMessage.substring(from:7, to: 13)) ?? 0
+                    self.sensor5mat.append(self.sensor5data)
                     
                     if(!self.bootsSwitchisOn){
-                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
-                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
-                        let range3 = start3..<end3
-                        self.sensor6.text = aMessage[range3]  // play
+                        self.sensor6data = Float(aMessage.substring(from:13, to: 19))  ?? 0
+                        self.sensor6mat.append(self.sensor6data)
                     }
-                    else{
+                    else {
                         self.sensor6.text = "0.000"
+                        self.sensor6mat.append(self.sensor6data)
                     }
-                    self.sensor6data.append((self.sensor6.text! as NSString).floatValue)
-                }
             }
             self.consoleAsciiText = newAsciiText
             
             // drop some data to prevent memory out of usage
-            if self.sensor1data.count == 1{
+            if self.sensor1mat.count == 1{
                 self.ULStart = Date()
                 self.URStart = Date()
                 self.MLStart = Date()
@@ -258,39 +277,48 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 self.BLStart = Date()
                 self.BRStart = Date()
             }
-            
-            if self.sensor1data.count > 20{
-                self.sensor1data = Array(self.sensor1data.suffix(20));
+            let WINDOWSIZE = 100
+            if self.sensor1mat.count > WINDOWSIZE{
+                self.sensor1.text = String(format: "%.3f", self.sensor1mat.average)
+                self.sensor1mat.removeAll()
             }
             
-            if self.sensor2data.count > 20{
-                self.sensor2data = Array(self.sensor2data.suffix(20));
+            if self.sensor2mat.count > WINDOWSIZE{
+                self.sensor2.text = String(format: "%.3f", self.sensor2mat.average)
+                self.sensor2mat.removeAll()
             }
             
-            if self.sensor3data.count > 20{
-                self.sensor3data = Array(self.sensor3data.suffix(20));
+            if self.sensor3mat.count > WINDOWSIZE{
+                self.sensor3.text = String(format: "%.3f", self.sensor3mat.average)
+                self.sensor3mat.removeAll()
             }
             
-            if self.sensor4data.count > 20{
-                self.sensor4data = Array(self.sensor4data.suffix(20));
+            if self.sensor4mat.count > WINDOWSIZE{
+                self.sensor4.text = String(format: "%.3f", self.sensor4mat.average)
+                self.sensor4mat.removeAll()
             }
             
-            if self.sensor5data.count > 20{
-                self.sensor5data = Array(self.sensor5data.suffix(20));
+            if self.sensor5mat.count > WINDOWSIZE{
+                
+                self.sensor5.text = String(format: "%.3f", self.sensor5mat.average)
+                self.sensor5mat.removeAll()
             }
             
-            if self.sensor6data.count > 20{
-                self.sensor6data = Array(self.sensor6data.suffix(20));
+            if self.sensor6mat.count > WINDOWSIZE{
+                
+                self.sensor6.text = String(format: "%.0001f", self.sensor6mat.average)
+                self.sensor6mat.removeAll()
             }
             
             if self.startedRecord && self.allDataIn {
                 self.recordData()
             }
-            if self.sensor1data.count != 0 && self.sensor4data.count != 0{
-                self.calcStillTime()
-                self.updatePictures()
-                self.getMotion()
-            }
+//            if self.sensor1data.count != 0 && self.sensor4data.count != 0{
+//                self.calcStillTime()
+//                self.updatePictures()
+//                self.getMotion()
+//            }
+        }
         }
     }
     
@@ -315,14 +343,13 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
         let timeString = outputFormatter.string(from: now)
-        let value1 = sensor1.text
-        let value2 = sensor2.text
-        let value3 = sensor3.text
-        let value4 = sensor4.text
-        let value5 = sensor5.text
-        let value6 = sensor6.text
-        let debugValue = "MVL"
-        let info = "\(timeString) \(value1 ?? debugValue) \(value2 ?? debugValue) \(value3 ?? debugValue) \(value4 ?? debugValue) \(value5 ?? debugValue) \(value6 ?? debugValue)\n"
+        let value1 = String(self.sensor1data)
+        let value2 = String(self.sensor2data)
+        let value3 = String(self.sensor3data)
+        let value4 = String(self.sensor4data)
+        let value5 = String(self.sensor5data)
+        let value6 = String(self.sensor6data)
+        let info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
         let manager = FileManager.default
         let urlsForDocDirectory = manager.urls(for:.documentDirectory, in:.userDomainMask)
         let docPath = urlsForDocDirectory[0]
@@ -336,89 +363,89 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         fileHandle.closeFile()
     }
     
-    func calcStillTime(){
-        let curData1 = sensor1data[sensor1data.count-1]
-        let curData2 = sensor2data[sensor2data.count-1]
-        let curData3 = sensor3data[sensor3data.count-1]
-        let curData4 = sensor4data[sensor4data.count-1]
-        let curData5 = sensor5data[sensor5data.count-1]
-        let curData6 = sensor6data[sensor6data.count-1]
-        
-        if(curData1 > 2){
-            self.ULStart = Date();
-        }
-        
-        if(curData2 > 2){
-            self.MLStart = Date();
-        }
-        
-        if(curData3 > 2){
-            self.BLStart = Date();
-        }
-        
-        if(curData4 > 2){
-            self.URStart = Date();
-        }
-        
-        if(curData5 > 2){
-            self.MRStart = Date();
-        }
-        
-        if(curData6 > 2){
-            self.BRStart = Date();
-        }
-        
-        let difference1 = Date().timeIntervalSince(self.ULStart)
-        let hours1 = Int(difference1) / 3600
-        let minutes1 = (Int(difference1) / 60) % 60
-        let second1 = (Int(difference1)) % 60
-        self.ULTime.text = "\(hours1) h \(minutes1) m \(second1) s"
-        self.ULStillTime = Int(difference1)
-        
-        let difference2 = Date().timeIntervalSince(self.MLStart)
-        let hours2 = Int(difference2) / 3600
-        let minutes2 = (Int(difference2) / 60) % 60
-        let second2 = (Int(difference2)) % 60
-        self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
-        self.MLStillTime = Int(difference2)
-        if(!self.bootsSwitchisOn){
-        let difference3 = Date().timeIntervalSince(self.BLStart)
-        let hours3 = Int(difference3) / 3600
-        let minutes3 = (Int(difference3) / 60) % 60
-        let second3 = (Int(difference3)) % 60
-        self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
-        self.BLStillTime = Int(difference3)
-        }
-        else{
-            self.BLTime.text = "N/A"
-            self.BLStart = Date()
-        }
-        let difference4 = Date().timeIntervalSince(self.URStart)
-        let hours4 = Int(difference4) / 3600
-        let minutes4 = (Int(difference4) / 60) % 60
-        let second4 = (Int(difference4)) % 60
-        self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
-        self.URStillTime = Int(difference4)
-        let difference5 = Date().timeIntervalSince(self.MRStart)
-        let hours5 = Int(difference5) / 3600
-        let minutes5 = (Int(difference5) / 60) % 60
-        let second5 = (Int(difference5)) % 60
-        self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
-        self.MRStillTime = Int(difference5)
-        
-        if(!self.bootsSwitchisOn){
-        let difference6 = Date().timeIntervalSince(self.BRStart)
-        let hours6 = Int(difference6) / 3600
-        let minutes6 = (Int(difference6) / 60) % 60
-        let second6 = (Int(difference6)) % 60
-        self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
-        self.BRStillTime = Int(difference6)
-        }
-        else{
-            self.BRTime.text = "N/A"
-            self.BRStart = Date()
-        }
-    }
+//    func calcStillTime(){
+//        let curData1 = sensor1data[sensor1data.count-1]
+//        let curData2 = sensor2data[sensor2data.count-1]
+//        let curData3 = sensor3data[sensor3data.count-1]
+//        let curData4 = sensor4data[sensor4data.count-1]
+//        let curData5 = sensor5data[sensor5data.count-1]
+//        let curData6 = sensor6data[sensor6data.count-1]
+//
+//        if(curData1 > 2){
+//            self.ULStart = Date();
+//        }
+//
+//        if(curData2 > 2){
+//            self.MLStart = Date();
+//        }
+//
+//        if(curData3 > 2){
+//            self.BLStart = Date();
+//        }
+//
+//        if(curData4 > 2){
+//            self.URStart = Date();
+//        }
+//
+//        if(curData5 > 2){
+//            self.MRStart = Date();
+//        }
+//
+//        if(curData6 > 2){
+//            self.BRStart = Date();
+//        }
+//
+//        let difference1 = Date().timeIntervalSince(self.ULStart)
+//        let hours1 = Int(difference1) / 3600
+//        let minutes1 = (Int(difference1) / 60) % 60
+//        let second1 = (Int(difference1)) % 60
+//        self.ULTime.text = "\(hours1) h \(minutes1) m \(second1) s"
+//        self.ULStillTime = Int(difference1)
+//
+//        let difference2 = Date().timeIntervalSince(self.MLStart)
+//        let hours2 = Int(difference2) / 3600
+//        let minutes2 = (Int(difference2) / 60) % 60
+//        let second2 = (Int(difference2)) % 60
+//        self.MLTime.text = "\(hours2) h \(minutes2) m \(second2) s"
+//        self.MLStillTime = Int(difference2)
+//        if(!self.bootsSwitchisOn){
+//        let difference3 = Date().timeIntervalSince(self.BLStart)
+//        let hours3 = Int(difference3) / 3600
+//        let minutes3 = (Int(difference3) / 60) % 60
+//        let second3 = (Int(difference3)) % 60
+//        self.BLTime.text = "\(hours3) h \(minutes3) m \(second3) s"
+//        self.BLStillTime = Int(difference3)
+//        }
+//        else{
+//            self.BLTime.text = "N/A"
+//            self.BLStart = Date()
+//        }
+//        let difference4 = Date().timeIntervalSince(self.URStart)
+//        let hours4 = Int(difference4) / 3600
+//        let minutes4 = (Int(difference4) / 60) % 60
+//        let second4 = (Int(difference4)) % 60
+//        self.URTime.text = "\(hours4) h \(minutes4) m \(second4) s"
+//        self.URStillTime = Int(difference4)
+//        let difference5 = Date().timeIntervalSince(self.MRStart)
+//        let hours5 = Int(difference5) / 3600
+//        let minutes5 = (Int(difference5) / 60) % 60
+//        let second5 = (Int(difference5)) % 60
+//        self.MRTime.text = "\(hours5) h \(minutes5) m \(second5) s"
+//        self.MRStillTime = Int(difference5)
+//
+//        if(!self.bootsSwitchisOn){
+//        let difference6 = Date().timeIntervalSince(self.BRStart)
+//        let hours6 = Int(difference6) / 3600
+//        let minutes6 = (Int(difference6) / 60) % 60
+//        let second6 = (Int(difference6)) % 60
+//        self.BRTime.text = "\(hours6) h \(minutes6) m \(second6) s"
+//        self.BRStillTime = Int(difference6)
+//        }
+//        else{
+//            self.BRTime.text = "N/A"
+//            self.BRStart = Date()
+//        }
+//    }
     
     func updatePictures(){
         // top left image view

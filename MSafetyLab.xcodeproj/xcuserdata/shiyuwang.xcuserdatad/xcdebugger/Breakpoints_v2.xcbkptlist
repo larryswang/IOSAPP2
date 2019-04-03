@@ -10,13 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Basic Chat/UartModuleViewController.swift"
-            timestampString = "565643830.878194"
+            timestampString = "576015851.977131"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "36"
             endingLineNumber = "36"
-            landmarkName = "UartModuleViewController"
-            landmarkType = "3">
+            landmarkName = "average"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

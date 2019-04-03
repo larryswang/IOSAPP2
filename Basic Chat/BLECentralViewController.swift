@@ -79,7 +79,7 @@ class BLECentralViewController : UIViewController, CBCentralManagerDelegate, CBP
     }
     
     /*We also need to stop scanning at some point so we'll also create a function that calls "stopScan"*/
-    func cancelScan() {
+    @objc func cancelScan() {
         self.centralManager?.stopScan()
         print("Scan Stopped")
         print("Number of Peripherals Found: \(peripherals.count)")
