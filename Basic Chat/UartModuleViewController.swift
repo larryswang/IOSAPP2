@@ -303,10 +303,16 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             }
         }
     }
-    
+    let MAXFILESIZE : Int = 500
+    var curfilesize : Int = 0
+    var curfileidx : Int = 0
     func recordData(){
         let fileManager = FileManager.default
-        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)"
+        if (self.curfilesize == self.MAXFILESIZE){
+            self.curfileidx += 1
+            self.curfilesize = 0
+        }
+        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)-\(self.curfileidx)"
         let exist = fileManager.fileExists(atPath: filePath1)
         //let pioneerString="\n"
         if(exist){
@@ -329,6 +335,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         var info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
         let WINDOWSIZE = 100
         if self.sensor1mat.count == WINDOWSIZE{
+            self.curfilesize += 1
             let avvalue1 = String(self.sensor1mat.average)
             let avvalue2 = String(self.sensor2mat.average)
             let avvalue3 = String(self.sensor3mat.average)
