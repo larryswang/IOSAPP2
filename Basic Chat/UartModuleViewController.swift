@@ -40,6 +40,24 @@ extension Collection where Element: BinaryFloatingPoint {
 import UIKit
 import CoreBluetooth
 
+extension Array where Element: FloatingPoint {
+    
+    func sum() -> Element {
+        return self.reduce(0, +)
+    }
+    
+    func avg() -> Element {
+        return self.sum() / Element(self.count)
+    }
+    
+    func std() -> Element {
+        let mean = self.avg()
+        let v = self.reduce(0, { $0 + ($1-mean)*($1-mean) })
+        return sqrt(v / (Element(self.count) - 1))
+    }
+    
+}
+
 class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, UITextViewDelegate, UITextFieldDelegate {
     
     
@@ -68,7 +86,8 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var histButton: UIButton!
     @IBOutlet weak var bootsSwitch: UISwitch!
     @IBOutlet weak var bedExtiAlarmSwitch: UISwitch!
-    
+    var startedRecord : Bool = false
+    var bootsSwitchisOn : Bool = false
 
     @IBOutlet weak var ULTime: UILabel!
     @IBOutlet weak var URTime: UILabel!
@@ -76,9 +95,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     @IBOutlet weak var MRTime: UILabel!
     @IBOutlet weak var BLTime: UILabel!
     @IBOutlet weak var BRTime: UILabel!
-    //Data
-    var startedRecord : Bool = false
-    var bootsSwitchisOn : Bool = false
+
     var ULStillTime : Int = 0
     var URStillTime : Int = 0
     var MLStillTime : Int = 0
@@ -98,6 +115,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var BRStart = Date()
     
     private var consoleAsciiText:NSAttributedString? = NSAttributedString(string: "")
+<<<<<<< HEAD
     //raw data point
     var sensor1data : Float = 0
     var sensor2data : Float = 0
@@ -113,6 +131,33 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var sensor4mat : [Float] = []
     var sensor5mat : [Float] = []
     var sensor6mat : [Float] = []
+=======
+    
+    // keep most recent 100 data
+    var rawData1 : [Float] = []
+    var rawData2 : [Float] = []
+    var rawData3 : [Float] = []
+    var rawData4 : [Float] = []
+    var rawData5 : [Float] = []
+    var rawData6 : [Float] = []
+    
+    // current data from all sensors
+    var data1 : Float = 0.0
+    var data2 : Float = 0.0
+    var data3 : Float = 0.0
+    var data4 : Float = 0.0
+    var data5 : Float = 0.0
+    var data6 : Float = 0.0
+    
+    // once reaches windowSize, update dash, clear current count, and save to file
+    let WINDOWSIZE = 100
+    var curWindowSize = 0
+    
+    // once reaches max file size, create new file and save to it
+    let MAXFILESIZE = 1000
+    var curFileSize = 0
+    var curFileCount = 1
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -208,15 +253,22 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         NotificationCenter.default.removeObserver(self)
         
     }
+    
     var allDataIn : Bool = false
+    
     func updateIncomingData () {
         NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "Notify"), object: nil , queue: nil){
             notification in
             let appendString = "\n"
             
             let myFont = UIFont(name: "Helvetica Neue", size: 15.0)
+<<<<<<< HEAD
             let myAttributes2 = [NSAttributedString.Key.font: myFont!, NSAttributedString.Key.foregroundColor: UIColor.red]
             let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: myAttributes2)
+=======
+            let myAttributes2 = [convertFromNSAttributedStringKey(NSAttributedString.Key.font): myFont!, convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.red]
+            let attribString = NSAttributedString(string: (characteristicASCIIValue as String) + appendString, attributes: convertToOptionalNSAttributedStringKeyDictionary(myAttributes2))
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
             let newAsciiText = NSMutableAttributedString(attributedString: self.consoleAsciiText!)
             
             let aMessage = attribString.string
@@ -232,6 +284,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 
                 if(aMessage.contains("#")){
                     self.allDataIn = false
+<<<<<<< HEAD
                     self.sensor1data = Float(aMessage.substring(from: 1, to: 7)) ?? 0
                     self.sensor1mat.append(self.sensor1data)
                     
@@ -245,11 +298,32 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     else {
                         self.sensor3.text = "0.000"
                         self.sensor3mat.append(self.sensor3data)
+=======
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
+                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let range1 = start1..<end1
+                    self.data1 = (String(aMessage[range1]) as NSString).floatValue
+                    
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                    let range2 = start2..<end2
+                    self.data2 = (String(aMessage[range2]) as NSString).floatValue
+                    
+                    if(!self.bootsSwitchisOn){
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                        let range3 = start3..<end3
+                        self.data3 = (String(aMessage[range3]) as NSString).floatValue
+                    }
+                    else {
+                        self.data3 = 0.0
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
                     }
                 }
                 
                 if(aMessage.contains("*")){
                     self.allDataIn = true
+<<<<<<< HEAD
                     self.sensor4data = Float(aMessage.substring(from: 2, to: 7)) ?? 0
                     self.sensor4mat.append(self.sensor4data)
                     
@@ -263,10 +337,31 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                     else {
                         self.sensor6.text = "0.000"
                         self.sensor6mat.append(self.sensor6data)
+=======
+                    let start1 = aMessage.index(aMessage.startIndex, offsetBy: 1)
+                    let end1 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let range1 = start1..<end1
+                    self.data4 = (String(aMessage[range1]) as NSString).floatValue
+                    
+                    let start2 = aMessage.index(aMessage.startIndex, offsetBy: 7)
+                    let end2 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                    let range2 = start2..<end2
+                    self.data5 = (String(aMessage[range2]) as NSString).floatValue
+                
+                    if(!self.bootsSwitchisOn){
+                        let start3 = aMessage.index(aMessage.startIndex, offsetBy: 13)
+                        let end3 = aMessage.index(aMessage.startIndex, offsetBy: 19)
+                        let range3 = start3..<end3
+                        self.data6 = (String(aMessage[range3]) as NSString).floatValue
+                    }
+                    else{
+                        self.data6 = 0.0
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
                     }
                 }
             self.consoleAsciiText = newAsciiText
             
+<<<<<<< HEAD
             if self.sensor1mat.count == 1{
                 self.ULStart = Date()
                 self.URStart = Date()
@@ -300,6 +395,21 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 self.sensor6.text = String(format: "%.3f", self.sensor6mat.average)
                 self.sensor6mat.removeAll()
             }
+=======
+            if self.allDataIn{
+                // append raw data into raw data array
+                self.rawData1.append(self.data1)
+                self.rawData2.append(self.data2)
+                self.rawData3.append(self.data3)
+                self.rawData4.append(self.data4)
+                self.rawData5.append(self.data5)
+                self.rawData6.append(self.data6)
+                
+                // record data if it started
+                if self.startedRecord{
+                    self.recordData()
+                }
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
             }
         }
     }
@@ -307,7 +417,9 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     var curfilesize : Int = 0
     var curfileidx : Int = 0
     func recordData(){
+        // create file manager and create file name
         let fileManager = FileManager.default
+<<<<<<< HEAD
         if (self.curfilesize == self.MAXFILESIZE){
             self.curfileidx += 1
             self.curfilesize = 0
@@ -317,15 +429,29 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
         //let pioneerString="\n"
         if(exist){
             
+=======
+        if(self.curFileSize == self.MAXFILESIZE){
+            self.curFileCount += 1
+            self.curFileSize = 0
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
         }
-        else{
+        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)-\(self.curFileCount)"
+        let exist = fileManager.fileExists(atPath: filePath1)
+        if(!exist){
             fileManager.createFile(atPath: filePath1, contents: nil, attributes: nil)
         }
+<<<<<<< HEAD
         
+=======
+
+        // create string to write
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
         let now = Date()
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "HH:mm:ss.SSS"
+        
         let timeString = outputFormatter.string(from: now)
+<<<<<<< HEAD
         let value1 = String(self.sensor1data)
         let value2 = String(self.sensor2data)
         let value3 = String(self.sensor3data)
@@ -344,6 +470,44 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             let avvalue6 = String(self.sensor6mat.average)
             info = "\(info)AVE\(timeString) \(avvalue1) \(avvalue2) \(avvalue3) \(avvalue4) \(avvalue5) \(avvalue6)\n"
         }
+=======
+        let value1 = String(describing: self.data1)
+        let value2 = String(describing: self.data2)
+        let value3 = String(describing: self.data3)
+        let value4 = String(describing: self.data4)
+        let value5 = String(describing: self.data5)
+        let value6 = String(describing: self.data6)
+        var info = "\(timeString) \(value1 ) \(value2 ) \(value3 ) \(value4 ) \(value5 ) \(value6 )\n"
+        self.curFileSize += 1
+        
+        // append average info if necessary
+        if self.curWindowSize == self.WINDOWSIZE{
+            print("reaches max window size!")
+            self.sensor1.text = "\(self.rawData1.avg())"
+            self.sensor2.text = "\(self.rawData2.avg())"
+            self.sensor3.text = "\(self.rawData3.avg())"
+            self.sensor4.text = "\(self.rawData4.avg())"
+            self.sensor5.text = "\(self.rawData5.avg())"
+            self.sensor6.text = "\(self.rawData6.avg())"
+            self.rawData1.removeAll()
+            self.rawData2.removeAll()
+            self.rawData3.removeAll()
+            self.rawData4.removeAll()
+            self.rawData5.removeAll()
+            self.rawData6.removeAll()
+            self.curWindowSize = 0
+            // append average info into string
+            info = "\(info)AVE\(timeString) \(self.sensor1.text) \(self.sensor2.text) \(self.sensor3.text) + \(self.sensor4.text) \(self.sensor5.text) \(self.sensor6.text)"
+        }
+        else{
+            self.curWindowSize += 1
+        }
+        
+//        let urlsForDocDirectory = fileManager.urls(for:.documentDirectory, in:.userDomainMask)
+//        let docPath = urlsForDocDirectory[0]
+//        let file = docPath.appendingPathComponent(self.filePath)
+//        print(file)
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
         
         let appendedData = info.data(using: String.Encoding.utf8, allowLossyConversion: true)
         let fileHandle :FileHandle = FileHandle(forWritingAtPath: filePath1)!
@@ -353,6 +517,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
     
 //    func calcStillTime(){
+<<<<<<< HEAD
 //        let curData1 = sensor1data[sensor1data.count-1]
 //        let curData2 = sensor2data[sensor2data.count-1]
 //        let curData3 = sensor3data[sensor3data.count-1]
@@ -384,6 +549,66 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
 //            self.BRStart = Date();
 //        }
 //
+=======
+//        let diff1 = self.data1 - self.rawData1.avg()
+//        let diff2 = self.data2 - self.rawData2.avg()
+//        let diff3 = self.data3 - self.rawData3.avg()
+//        let diff4 = self.data4 - self.rawData4.avg()
+//        let diff5 = self.data5 - self.rawData5.avg()
+//        let diff6 = self.data6 - self.rawData6.avg()
+//
+//        if(diff1 > 3 * self.sensor1sigma){
+//            self.ULStart = Date();
+//        }
+//
+//        if(diff2 >  3 * self.sensor2sigma){
+//            self.MLStart = Date();
+//        }
+//
+//        if(diff3 >  3 * self.sensor3sigma){
+//            self.BLStart = Date();
+//        }
+//
+//        if(diff4 >  3 * self.sensor4sigma){
+//            self.URStart = Date();
+//        }
+//
+//        if(diff5 >  3 * self.sensor5sigma){
+//            self.MRStart = Date();
+//        }
+//
+//        if(diff6 >  3 * self.sensor6sigma){
+//            self.BRStart = Date();
+//        }
+//
+////        if(diff1 < -15 * self.sensor1sigma || diff2 < -15 * self.sensor2sigma || diff3 < -15 * self.sensor3sigma || diff4 < -15 * self.sensor4sigma || diff5 < -15 * self.sensor5sigma || diff6 < -15 * self.sensor6sigma || curData1 < -9 || curData2 < -9 || curData3 < -9 || curData4 < -9 || curData5 < -9 || curData6 < -9){
+////
+////            let alert = UIAlertController(title: "Caution", message: "BED EGRESS ALERT!", preferredStyle: .alert)
+////            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+////                switch action.style{
+////                case .default:
+////                    print("default")
+////
+////                case .cancel:
+////                    print("cancel")
+////                    self.alertShowing = false
+////
+////                case .destructive:
+////                    print("destructive")
+////
+////
+////                }}))
+////            self.present(alert, animated: true, completion: nil)
+////
+////            // change to desired number of seconds (in this case 5 seconds)
+////            let when = DispatchTime.now() + 5
+////            DispatchQueue.main.asyncAfter(deadline: when){
+////                // your code with delay
+////                alert.dismiss(animated: true, completion: nil)
+////            }
+////        }
+//
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
 //        let difference1 = Date().timeIntervalSince(self.ULStart)
 //        let hours1 = Int(difference1) / 3600
 //        let minutes1 = (Int(difference1) / 60) % 60
@@ -435,6 +660,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
 //            self.BRStart = Date()
 //        }
 //    }
+<<<<<<< HEAD
     
     func updatePictures(){
         // top left image view
@@ -503,10 +729,76 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.BRView.image = UIImage(named: "bootsright.png")
         }
     }
+=======
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
     
-    func getMotion(){
-        
-    }
+//    func updatePictures(){
+//        // top left image view
+//        if(self.ULStillTime > 40){
+//            self.ULView.image = UIImage(named: "ulred.png")
+//        }
+//        else if(self.ULStillTime > 20){
+//            self.ULView.image = UIImage(named: "ulyel.png")
+//        }
+//        else{
+//            self.ULView.image = UIImage()
+//        }
+//        // top right image view
+//        if(self.URStillTime > 40){
+//            self.URView.image = UIImage(named: "urred.png")
+//        }
+//        else if(self.URStillTime > 20){
+//            self.URView.image = UIImage(named: "uryel.png")
+//        }
+//        else{
+//            self.URView.image = UIImage()
+//        }
+//        // mid left image view
+//        if(self.MLStillTime > 40){
+//            self.MLView.image = UIImage(named: "mlred.png")
+//        }
+//        else if(self.MLStillTime > 20){
+//            self.MLView.image = UIImage(named: "mlyel.png")
+//        }
+//        else{
+//            self.MLView.image = UIImage()
+//        }
+//        // mid right image view
+//        if(self.MRStillTime > 40){
+//            self.MRView.image = UIImage(named: "mrred.png")
+//        }
+//        else if(self.MRStillTime > 20){
+//            self.MRView.image = UIImage(named: "mryel.png")
+//        }
+//        else{
+//            self.MRView.image = UIImage()
+//        }
+//        // bot left image view
+//        if(!self.bootsSwitchisOn){
+//            if(self.BLStillTime > 40){
+//                self.BLView.image = UIImage(named: "blred.png")
+//            }
+//            else if(self.BLStillTime > 20){
+//                self.BLView.image = UIImage(named: "blyel.png")
+//            }
+//            else{
+//                self.BLView.image = UIImage()
+//            }
+//            // bot right image view
+//            if(self.BRStillTime > 40){
+//                self.BRView.image = UIImage(named: "brred.png")
+//            }
+//            else if(self.BRStillTime > 20){
+//                self.BRView.image = UIImage(named: "bryel.png")
+//            }
+//            else{
+//                self.BRView.image = UIImage()
+//            }
+//        }else{
+//            self.BLView.image = UIImage(named: "bootsleft.png")
+//            self.BRView.image = UIImage(named: "bootsright.png")
+//        }
+//    }
     
     // Write functions
     func writeValue(data: String){
@@ -577,3 +869,14 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
+}

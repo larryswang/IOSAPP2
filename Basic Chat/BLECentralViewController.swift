@@ -256,7 +256,11 @@ class BLECentralViewController : UIViewController, CBCentralManagerDelegate, CBP
         if characteristic == rxCharacteristic {
             if let ASCIIstring = NSString(data: characteristic.value!, encoding: String.Encoding.utf8.rawValue) {
                 characteristicASCIIValue = ASCIIstring
+<<<<<<< HEAD
                 // print("Value Recieved: \((characteristicASCIIValue as String))")
+=======
+                //print("Value Recieved: \((characteristicASCIIValue as String))")
+>>>>>>> 7f5c04f739f03931f17528c790cedfe2ab2d2f2d
                 NotificationCenter.default.post(name:NSNotification.Name(rawValue: "Notify"), object: nil)
                 
             }
@@ -362,8 +366,8 @@ class BLECentralViewController : UIViewController, CBCentralManagerDelegate, CBP
             //If Bluetooth is off, display a UI alert message saying "Bluetooth is not enable" and "Make sure that your bluetooth is turned on"
             print("Bluetooth Disabled- Make sure your Bluetooth is turned on")
             
-            let alertVC = UIAlertController(title: "Bluetooth is not enabled", message: "Make sure that your bluetooth is turned on", preferredStyle: UIAlertControllerStyle.alert)
-            let action = UIAlertAction(title: "ok", style: UIAlertActionStyle.default, handler: { (action: UIAlertAction) -> Void in
+            let alertVC = UIAlertController(title: "Bluetooth is not enabled", message: "Make sure that your bluetooth is turned on", preferredStyle: UIAlertController.Style.alert)
+            let action = UIAlertAction(title: "ok", style: UIAlertAction.Style.default, handler: { (action: UIAlertAction) -> Void in
                 self.dismiss(animated: true, completion: nil)
             })
             alertVC.addAction(action)
