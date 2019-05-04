@@ -175,7 +175,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
                 action in
                 (sender as! UIButton).setTitle("STOP", for:UIControl.State.normal)
                 let login:NSString = alertController.textFields!.first!.text! as NSString
-                self.filePath="\( login).txt"
+                self.filePath="\( login)"
                 weakSelf?.startedRecord = true
             })
             alertController.addAction(cancelAction)
@@ -312,7 +312,7 @@ class UartModuleViewController: UIViewController, CBPeripheralManagerDelegate, U
             self.curfileidx += 1
             self.curfilesize = 0
         }
-        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)-\(self.curfileidx)"
+        let filePath1:String = NSHomeDirectory() + "/Documents/\(self.filePath as String)-\(self.curfileidx).txt"
         let exist = fileManager.fileExists(atPath: filePath1)
         //let pioneerString="\n"
         if(exist){
